@@ -17,7 +17,10 @@ add_subdirectory(tests/c++)
 
 set(SOURCES
         Token.cpp
-        value.cpp)
+        value.cpp
+        scanner.cpp)
 add_library(lox ${SOURCES})
-add_executable(cppLox CppLox.cpp Token.cpp scanner.cpp)
+
+add_executable(cppLox CppLox.cpp)
+target_link_libraries(cppLox lox)
 

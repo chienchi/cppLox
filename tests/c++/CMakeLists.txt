@@ -8,7 +8,7 @@ add_test(test test2)
 
 add_executable(token test_main.cpp Token.cpp)
 target_link_libraries(token lox)
-add_test(token token)
+add_test(token token )
 
 add_executable(value test_main.cpp value.cpp)
 target_link_libraries(value lox)

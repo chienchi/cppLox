@@ -3,12 +3,12 @@
 //
 
 #include "Token.h"
-#include <map>
+#include <unordered_map>
 
 
 // Homework operator<<(os&, const TokenType& type);
 std::ostream& operator<<(std::ostream& os, const TokenType& tt) {
-    std::map<TokenType,std::string> TokenMap{
+    static const std::unordered_map<TokenType,std::string> TokenMap{
             {TokenType::VAR, "VAR"},
             {TokenType::LEFT_PAREN, "LEFT_PAREN"},
             {TokenType::RIGHT_PAREN, "RIGHT_PAREN"},
@@ -49,6 +49,7 @@ std::ostream& operator<<(std::ostream& os, const TokenType& tt) {
             {TokenType::WHILE, "WHILE"},
             {TokenType::eof, "eof"}
     };
+    //if (! TokenMap.find(tt)){}
     os << TokenMap.find(tt)->second;
     return os;
 }
