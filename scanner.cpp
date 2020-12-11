@@ -8,12 +8,24 @@
 char Scanner::advance(){
     current++;
     return source[current-1];
-};
+}
+char Scanner::peek(){
+    return isAtEnd()?'\0': source[current];
+}
 
 void Scanner::addToken(TokenType type){
     std::string text = source.substr(start,current-start);
     tokens.push_back(Token{type,text,Value{text},line});
-};
+}
+
+bool Scanner::match(char expected) {
+    if (isAtEnd() or source[current] != expected) {
+        return false;
+    }
+    current++;
+    return true;
+}
+
 void Scanner::scanToken(){
     char c = advance();
     switch(c) {
@@ -27,6 +39,35 @@ void Scanner::scanToken(){
         case '+': addToken(TokenType::PLUS); break;
         case ';': addToken(TokenType::SEMICOLON); break;
         case '*': addToken(TokenType::STAR); break;
+        case '!': addToken(
+                match('=')?TokenType::BANG_EQUAL:TokenType::BANG
+                );
+            break;
+        case '=': addToken(
+                    match('=')?TokenType::EQUAL_EQUAL:TokenType::EQUAL
+            );
+            break;
+        case '<': addToken(
+                    match('=')?TokenType::LESS_EQUAL:TokenType::LESS
+            );
+            break;
+        case '>': addToken(
+                    match('=')?TokenType::GREATER_EQUAL:TokenType::GREATER
+            );
+            break;
+        case '/': if (match('/')){
+                // A comment goes until the end of the line.
+                while(peek() != '\n' && !isAtEnd()) {advance();}
+            } else {
+                addToken(TokenType::SLASH);
+            }
+            break;
+        case ' ':
+        case '\r':
+        case '\t':
+            //Ignore whitespace
+            break;
+        case '\n': line++; break;
     }
-};
+}
 
