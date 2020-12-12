@@ -5,6 +5,19 @@
 // "var language= 'lox';" =>
 // Token(VAR), Token(ID), Token(EQUAL), Token(STRING), Token(SEMICOLON)
 #include "scanner.h"
+#include <unordered_map>
+bool Scanner::isAtEnd(){
+    return current >= source.size();
+}
+bool Scanner::isDigit(char c){
+    return c >= '0' and c<='9';
+}
+bool Scanner::isAlpha(char c){
+    return (c >= 'a' and c <= 'z') or (c >= 'A' and c <= 'Z') or c =='_';
+}
+bool Scanner::isAlphaNumeric(char c){
+    return isAlpha(c) or isDigit(c);
+}
 char Scanner::advance(){
     current++;
     return source[current-1];
@@ -12,18 +25,88 @@ char Scanner::advance(){
 char Scanner::peek(){
     return isAtEnd()?'\0': source[current];
 }
-
+char Scanner::peekNext() {
+    return (current + 1 >= source.size())? '\0':source[current+1];
+}
 void Scanner::addToken(TokenType type){
     std::string text = source.substr(start,current-start);
     tokens.push_back(Token{type,text,Value{text},line});
 }
 
+void Scanner::addToken(TokenType type,std::string text){
+    if (type == TokenType::NUMBER){
+        tokens.push_back(Token{type,text,Value{std::stod(text)},line});
+    }else{
+        tokens.push_back(Token{type,text,Value{text},line});
+    }
+
+}
 bool Scanner::match(char expected) {
     if (isAtEnd() or source[current] != expected) {
         return false;
     }
     current++;
     return true;
+}
+
+void Scanner::string(){
+    while(peek() != '"' and !isAtEnd()){
+        if(peek() == '\n'){ line++;}
+        advance();
+    }
+    if (isAtEnd()){
+        //error
+        return;
+    }
+
+    // The closing ".
+    advance();
+
+    std::string value = source.substr(start+1, current - start -1);
+    addToken(TokenType::STRING,value);
+}
+
+void Scanner::number(){
+    while (isDigit(peek())) {advance();}
+    // Look for a fractional part.
+    if (peek() == '.' and isDigit(peekNext())){
+        // Consume the ".'
+        advance();
+
+        while (isDigit(peek())){advance();}
+    }
+
+    addToken(TokenType::NUMBER,source.substr(start,current-start));
+}
+
+static const std::unordered_map<std::string,TokenType> keywords{
+        {"and", TokenType::AND},
+        {"class", TokenType::CLASS},
+        {"else",TokenType::ELSE},
+        {"false",TokenType::FALSE},
+        {"for", TokenType::FOR},
+        {"fun", TokenType::FUN},
+        {"if", TokenType::IF},
+        {"nil", TokenType::NIL},
+        {"or", TokenType::OR},
+        {"print", TokenType::PRINT},
+        {"return", TokenType::RETURN},
+        {"super", TokenType::SUPER},
+        {"this", TokenType::THIS},
+        {"true", TokenType::TRUE},
+        {"var", TokenType::VAR},
+        {"while", TokenType::WHILE}
+};
+
+void Scanner::identifier() {
+    while (isAlphaNumeric(peek())) {advance();}
+    std::string text = source.substr(start,current-start);
+    auto search = keywords.find(text);
+    if (search == keywords.end()) {
+        addToken(TokenType::IDENTIFIER);
+    }else{
+        addToken(search->second);
+    }
 }
 
 void Scanner::scanToken(){
@@ -68,6 +151,18 @@ void Scanner::scanToken(){
             //Ignore whitespace
             break;
         case '\n': line++; break;
+        case '"': string(); break;
+
+        default:
+            if (isDigit(c)){
+                number();
+            } else if (isAlpha(c)) {
+                identifier();
+            } else {
+                    // error
+            }
+
+            break;
     }
 }
 

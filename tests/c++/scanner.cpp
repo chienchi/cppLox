@@ -17,9 +17,9 @@ TEST_CASE("Scanner"){
        // auto tokens = scanner.scanTokens();
         auto tokens = scanner.scanTokens();
 
-        for (auto token : tokens){
-            std::cout << "token: " << token << std::endl;
-        }
+       // for (auto token : tokens){
+            //std::cout << "token: " << token << std::endl;
+       // }
         // 3rd order approximation, deal with backslash, escape sequence.
         // (maybe a non-issue, the "native language" might be able to handle automatically.)
 
@@ -30,13 +30,15 @@ TEST_CASE("Scanner"){
     SECTION("scanner Class") {
         std::string line = "var language = \"lox\";";
 
-        //Scanner scanner{line};
-        //auto token = scanner.scanTokens();
-
-        /*REQUIRE(tokens[0].type == TokenType::VAR);
+        Scanner scanner{line};
+        auto tokens = scanner.scanTokens();
+        for (auto token : tokens){
+            std::cout << "token: " << token.type << std::endl;
+        }
+        REQUIRE(tokens[0].type == TokenType::VAR);
         REQUIRE(tokens[1].type == TokenType::IDENTIFIER);
         REQUIRE(tokens[2].type == TokenType::EQUAL);
         REQUIRE(tokens[3].type == TokenType::STRING);
-        REQUIRE(tokens[4].type == TokenType::SEMICOLON);*/
+        REQUIRE(tokens[4].type == TokenType::SEMICOLON);
     }
 }

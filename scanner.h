@@ -14,9 +14,21 @@ public:
     Scanner(const std::string& s_source): source(s_source){};
 
 private:
-    bool isAtEnd(){
-        return current >= source.size();
-    }
+    bool isAtEnd();
+    char advance();
+    void scanToken();
+    void addToken(TokenType type);
+    void addToken(TokenType type, std::string text);
+    bool match(char expected);
+    char peek();
+    void string();
+    bool isDigit(char c);
+    void number();
+    char peekNext();
+    bool isAlpha(char c);
+    bool isAlphaNumeric(char c);
+    void identifier();
+
     auto zeroOrder(){
         std::vector<std::string> stokens;
         // 0th approximation, scan from left to right, slice input
@@ -102,13 +114,13 @@ private:
 
 public:
     auto scanTokens() {
-        //while(!isAtEnd()){
-        //    start = current;
-        //    scanToken();
-        //}
-        //tokens.push_back(Token{TokenType::eof,"",Value{},line});
-        //return tokens;
-        return firstOrder();
+        while(!isAtEnd()){
+            start = current;
+            scanToken();
+        }
+        tokens.push_back(Token{TokenType::eof,"",Value{},line});
+        return tokens;
+        //return firstOrder();
     }
 
 
@@ -122,11 +134,7 @@ private:
     std::size_t line;
     std::vector<Token> tokens;
 
-    char advance();
-    void scanToken();
-    void addToken(TokenType type);
-    bool match(char expected);
-    char peek();
+
 };
 
 #endif //CPPLOX_SCANNER_H
