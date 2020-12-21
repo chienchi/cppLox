@@ -11,7 +11,7 @@
 
 TEST_CASE("Scanner"){
     SECTION("approximations") {
-        std::string line = "var language = \"lox\";";
+        std::string line = "var language = \"lox\"";
 
         Scanner scanner{line};
        // auto tokens = scanner.scanTokens();
@@ -28,17 +28,18 @@ TEST_CASE("Scanner"){
     }
 
     SECTION("scanner Class") {
-        std::string line = "var language = \"lox\";";
+        std::string line = "var language = % \"lox\"";
 
         Scanner scanner{line};
         auto tokens = scanner.scanTokens();
         for (auto token : tokens){
-            std::cout << "token: " << token.type << std::endl;
+            std::cout << "token: " << token << std::endl;
+           // std::cout << "token: " << token.type== << std::endl;
         }
-        REQUIRE(tokens[0].type == TokenType::VAR);
-        REQUIRE(tokens[1].type == TokenType::IDENTIFIER);
-        REQUIRE(tokens[2].type == TokenType::EQUAL);
-        REQUIRE(tokens[3].type == TokenType::STRING);
-        REQUIRE(tokens[4].type == TokenType::SEMICOLON);
+      //  REQUIRE(tokens[0].type == TokenType::VAR);
+      //  REQUIRE(tokens[1].type == TokenType::IDENTIFIER);
+      //  REQUIRE(tokens[2].type == TokenType::EQUAL);
+      //  REQUIRE(tokens[3].type == TokenType::STRING);
+      //  REQUIRE(tokens[4].type == TokenType::SEMICOLON);
     }
 }

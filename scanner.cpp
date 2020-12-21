@@ -6,6 +6,14 @@
 // Token(VAR), Token(ID), Token(EQUAL), Token(STRING), Token(SEMICOLON)
 #include "scanner.h"
 #include <unordered_map>
+#include <iostream>
+#include <string>
+
+
+void Scanner::errorLog(const std::string& where, const std::string& msg) {
+    std::cerr << "[line " << line + 1 << "] Error ";
+    std::cerr << where << ": " << msg << std::endl;
+}
 bool Scanner::isAtEnd(){
     return current >= source.size();
 }
@@ -56,13 +64,14 @@ void Scanner::string(){
     }
     if (isAtEnd()){
         //error
+        errorLog("","Unterminated String!");
         return;
     }
 
-    // The closing ".
+    // The closing ".  and lead to current - start -2 in length of string
     advance();
 
-    std::string value = source.substr(start+1, current - start -1);
+    std::string value = source.substr(start+1, current - start - 2);
     addToken(TokenType::STRING,value);
 }
 
@@ -159,7 +168,9 @@ void Scanner::scanToken(){
             } else if (isAlpha(c)) {
                 identifier();
             } else {
-                    // error
+                // string(std::initializer list<charT> list)
+                std::string str{c};
+                errorLog(str,"Unexpected Character.");
             }
 
             break;
