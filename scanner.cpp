@@ -6,14 +6,9 @@
 // Token(VAR), Token(ID), Token(EQUAL), Token(STRING), Token(SEMICOLON)
 #include "scanner.h"
 #include <unordered_map>
-#include <iostream>
 #include <string>
 
 
-void Scanner::errorLog(const std::string& where, const std::string& msg) {
-    std::cerr << "[line " << line + 1 << "] Error ";
-    std::cerr << where << ": " << msg << std::endl;
-}
 bool Scanner::isAtEnd(){
     return current >= source.size();
 }
@@ -64,7 +59,7 @@ void Scanner::string(){
     }
     if (isAtEnd()){
         //error
-        errorLog("","Unterminated String!");
+        errorLog(line, "","Unterminated String!");
         return;
     }
 
@@ -75,8 +70,17 @@ void Scanner::string(){
     addToken(TokenType::STRING,value);
 }
 
-void Scanner::number(){
-    while (isDigit(peek())) {advance();}
+void Scanner::number(char c){
+    // Homework
+    // 1. omitting leading 0 and trailing digits
+    // 2. scientific notation, 6.02e-10
+    while ( c == '0' and isDigit(peek())){
+        c = advance();
+        start++;
+    }
+    while (isDigit(peek())) {
+        advance();
+    }
     // Look for a fractional part.
     if (peek() == '.' and isDigit(peekNext())){
         // Consume the ".'
@@ -85,6 +89,26 @@ void Scanner::number(){
         while (isDigit(peek())){advance();}
     }
 
+    if(peek() == 'e' and isDigit(peekNext())){
+        advance();
+        while (isDigit(peek())){advance();}
+    }
+    if(peek() == 'e' and peekNext() == '-'){
+        advance();  // Consume the "e'
+        advance();  // Consume the "-'
+        if (isDigit(peek())) {
+            while (isDigit(peek())) { advance(); }
+        }else{
+            errorLog(line, source.substr(start,current-start),"Unterminated Scientific Number!");
+            return;
+        }
+    }
+    if(peek() == 'e' and peekNext() != '-' and !isDigit(peekNext())){
+        advance();
+        errorLog(line, source.substr(start,current-start),"Unterminated Scientific Number!");
+    }
+    // Lox does not allow number with leading or trailing '.' ies. .1234 or 1234. thus
+    // a '.' needs to be followed by a digit
     addToken(TokenType::NUMBER,source.substr(start,current-start));
 }
 
@@ -164,13 +188,14 @@ void Scanner::scanToken(){
 
         default:
             if (isDigit(c)){
-                number();
+                number(c);
             } else if (isAlpha(c)) {
                 identifier();
             } else {
                 // string(std::initializer list<charT> list)
                 std::string str{c};
-                errorLog(str,"Unexpected Character.");
+                errorLog(line, str,"Unexpected Character.");
+                return;
             }
 
             break;

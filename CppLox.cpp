@@ -6,15 +6,17 @@
 #include <fstream>
 #include <sstream>
 #include <cstring>
+#include "scanner.h"
 
 // Q : what parameter
 // 1.  lvalue vs rvalue
 // 2.  copy elision of Cpp17
 void run(const std::string& source){
-    std::string expected{"// our first Lox program\n"
-                         "print \"Hello World!\";\n"};
-    if (source != expected){
-        std::cout << "Something Wrong\n";
+
+    Scanner scanner(source);
+    auto tokens = scanner.scanTokens();
+    for (const auto &token: tokens){
+        std::cout << token << std::endl;
     }
 }
 void runFile(char *path){
@@ -31,6 +33,8 @@ void runFile(char *path){
         //    throw std::ios_base::failure(std::strerror(errno));
         // Q: is this the 'best' way to call run()
         run(content.str());
+        if (hasError)
+            exit(65);
     } catch (std::ios_base::failure &failure){
 
         std::cerr << failure.what() << std::endl;
@@ -48,6 +52,7 @@ void runPrompt(){
         // Todo:: still missing the new line character, does it matter?
         std::getline(std::cin,line);
         run(line);
+        hasError = false;
     }
 }
 int main(int argc, char *argv[]){

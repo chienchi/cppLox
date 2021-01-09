@@ -6,31 +6,16 @@
 #define CPPLOX_ERROR_H
 
 #include <iostream>
+static bool hasError = false;
 
-enum class hasError{ YES , NO };
-
-class ErrorLog{
-public:
-    ErrorLog(std::string& i_where, std::string& i_msg): where(i_where), message(i_msg){};
-private:
-    void report(const int line, const std::string& here, const std::string& msg){
-        std::cerr << "[line " << line << "] Error";
-        std::cerr << here << ": " << msg << std::endl;
-        status = hasError::YES;
-    }
-
-public:
-    void error(const int line, const std::string& msg){
-        report(line,"",msg);
-    }
-    auto getStatus(){
-        return status;
-    }
-private:
-    std::string message;
-    std::string where;
-    hasError status = hasError::NO;
-};
+static void errorLog(std::size_t line, const std::string& where, const std::string& msg){
+    std::cerr << "[line " << line << "] Error ";
+    std::cerr << where << ": " << msg << std::endl;
+    hasError = true;
+}
+/*void error(size_t line, const std::string &msg){
+    report(line,"",msg)
+}*/
 
 
 #endif //CPPLOX_ERROR_H

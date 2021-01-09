@@ -7,8 +7,7 @@
 #include <string>
 #include "Token.h"
 #include <vector>
-
-
+#include "error.h"
 
 class Scanner{
 public:
@@ -24,12 +23,12 @@ private:
     char peek();
     void string();
     bool isDigit(char c);
-    void number();
+    void number(char c);
     char peekNext();
     bool isAlpha(char c);
     bool isAlphaNumeric(char c);
     void identifier();
-    void errorLog(const std::string& where, const std::string& msg);
+
 
     auto zeroOrder(){
         std::vector<std::string> stokens;
@@ -147,7 +146,7 @@ private:
     const std::string& source;
     std::size_t start = 0;
     std::size_t current = 0;
-    std::size_t line;
+    std::size_t line = 1;
     std::vector<Token> tokens;
 };
 
