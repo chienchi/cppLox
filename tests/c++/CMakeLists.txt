@@ -17,3 +17,7 @@ add_test(value value)
 add_executable(scanner test_main.cpp scanner.cpp)
 target_link_libraries(scanner lox)
 add_test(scanner scanner)
+
+add_executable(parser test_main.cpp parser.cpp)
+target_link_libraries(parser lox)
+add_test(parser parser)
