@@ -31,7 +31,7 @@ enum class TokenType{
 };
 struct Token{
     // No constructor needed (at this point) because it is very "simple"
-    // this is what C++ called "aggregate"
+    // this is what C++ called "aggregate" initialization
     const TokenType type;
     const std::string lexeme;
     const Value literal;

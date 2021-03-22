@@ -29,7 +29,7 @@ TEST_CASE("Scanner"){
 
     SECTION("scanner Class") {
         //std::string line = "var language = % \"lox\"";
-        std::string line = "var language = 111.2e1";
+        std::string line = "var language = 01.2e8";
         Scanner scanner{line};
         auto tokens = scanner.scanTokens();
         for (auto token : tokens){
