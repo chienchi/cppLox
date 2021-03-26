@@ -4,49 +4,64 @@
 #define CPPLOX_PARSER_H
 #include <string>
 #include "Token.h"
+#include <utility>
 #include <vector>
+
 // Chapter 5
-struct Expression {};
+struct Expression {
+    // pure virtual function
+    [[nodiscard]] virtual Value eval() const = 0;
+};
 struct Literal: public Expression {
+    explicit Literal(Value value) : value(std::move(value)){}
 
-    //Literal(Value value) : value(value){}
-
+    [[nodiscard]] Value eval() const override{
+        return value;
+    }
     Value value;
 };
 
 struct Binary: public Expression {
-    Literal left;
+    Binary(Expression* left, Token op, Expression* right): left(left),op(std::move(op)),right(right){}
+    [[nodiscard]] Value eval() const override{
+        return Value { std::get<double>(left->eval())+ std::get<double>(right->eval()) };
+    }
+    Expression *left;
     Token op;
-    Literal right;
+    Expression *right;
 };
 
 // Chapter 6
 class Parser {
 public:
-    explicit Parser(const std::vector<Token>& tokens) : tokens(tokens){}
+    explicit Parser(std::vector<Token>  tokens) : tokens(std::move(tokens)){}
 
     bool isAtEnd(){
         return current >= tokens.size();
     }
-    auto literal(){
+    Expression *literal(){
         // "aggregate" initialization
-        return Literal {tokens[current++].literal};
-    }
-    auto parse(){
+        // "new" dynamic memory allocation pointer
+        return new Literal(tokens[current++].literal);
+    };
+    Expression *parse(){
         // Grammars:
         //   expression := literal | binary
         //   binary := literal + op + literal
         //   literal := Number
         //while(!isAtEnd())
         auto left = literal();
+
         if(isAtEnd()){
-            return left;
+            return left;  //return type => Literal
         }
         auto op = tokens[current++];
+
         auto right = literal();
 
-        return Binary {left,op,right};
-    }
+        // "new" dynamic memory allocation pointer
+        return new Binary(left,op,right);  // return type => Binary
+    };
     // is insufficient to see the left or right
     // while (!isAtEnd()){
     //        switch(current_token){
@@ -67,14 +82,14 @@ private:
 // Chapter 7
 class Interpreter{
 public:
-    explicit Interpreter(const Literal& expr) : expr(expr){}
+    explicit Interpreter( const Expression *expr) : expr(expr){}
 
     Value eval(){
-        return expr.value;
+        return expr->eval();
     }
 
 private:
-    Literal expr;
+    const Expression *expr;
 };
 
 #endif //CPPLOX_PARSER_H

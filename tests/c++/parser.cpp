@@ -12,11 +12,13 @@ TEST_CASE("Parser"){
         std::string line = "1";
         Scanner scanner{line};
         auto tokens = scanner.scanTokens();
-
+        for (const auto& token : tokens){
+           // std::cout << "token: " << token << std::endl;
+        }
         Parser parser {tokens};
         auto expr = parser.parse();
 
-        REQUIRE(expr.value == Value(1.0));
+        //REQUIRE(expr->eval() == Value(1.0));
 
         Interpreter interpreter {expr};
         auto value = interpreter.eval();
@@ -40,12 +42,13 @@ TEST_CASE("Parser"){
         Parser parser {tokens};
         auto expr = parser.parse();
 
-        REQUIRE(expr.value == Value(3.0));
+        //REQUIRE(expr->eval() == Value(3.0));
 
         Interpreter interpreter {expr};
         auto value = interpreter.eval();
         REQUIRE(value == Value(3.0));
     }
 
-    // 1+2+3
+    // Homework: 1+2+3
+    // Extra credit: 1-2-3 => -4 ,2?
 }
