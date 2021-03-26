@@ -1,3 +1,5 @@
+![example workflow](https://github.com/chienchi/cppLox/actions/workflows/cmake.yml/badge.svg)
+
 # cppLox
 
 This is a C++ project to implement Lox language using C++2x features.
