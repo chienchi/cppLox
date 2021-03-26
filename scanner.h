@@ -138,7 +138,7 @@ public:
             scanToken();
         }
 
-        tokens.push_back(Token{TokenType::eof,"",Value{},line});
+        //tokens.push_back(Token{TokenType::eof,"",Value{},line});
         return tokens;
         //return firstOrder();
     }

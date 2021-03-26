@@ -28,18 +28,18 @@ TEST_CASE("Scanner"){
     }
 
     SECTION("scanner Class") {
-        //std::string line = "var language = % \"lox\"";
-        std::string line = "var language = 01.2e8";
+        std::string line = "var language =  \"lox\"";
+        //std::string line = "var language = 01.2e8";
         Scanner scanner{line};
         auto tokens = scanner.scanTokens();
         for (auto token : tokens){
             std::cout << "token: " << token << std::endl;
            // std::cout << "token: " << token.type== << std::endl;
         }
-      //  REQUIRE(tokens[0].type == TokenType::VAR);
-      //  REQUIRE(tokens[1].type == TokenType::IDENTIFIER);
-      //  REQUIRE(tokens[2].type == TokenType::EQUAL);
-      //  REQUIRE(tokens[3].type == TokenType::STRING);
+        REQUIRE(tokens[0].type == TokenType::VAR);
+        REQUIRE(tokens[1].type == TokenType::IDENTIFIER);
+        REQUIRE(tokens[2].type == TokenType::EQUAL);
+        REQUIRE(tokens[3].type == TokenType::STRING);
       //  REQUIRE(tokens[4].type == TokenType::SEMICOLON);
     }
 }

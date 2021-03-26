@@ -4,7 +4,6 @@ add_executable(trivial trivial.cpp)
 add_executable(reader reader.cpp test_main.cpp)
 
 add_executable(test2 test.cpp)
-add_test(test test2)
 
 add_executable(token test_main.cpp Token.cpp)
 target_link_libraries(token lox)
