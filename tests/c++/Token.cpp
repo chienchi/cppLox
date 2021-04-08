@@ -2,6 +2,7 @@
 // Created by osboxes on 11/20/20.
 //
 
+#include <sstream>
 #include "catch.hpp"
 #include "Token.h"
 
