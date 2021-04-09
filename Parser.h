@@ -24,7 +24,11 @@ struct Literal: public Expression {
 struct Binary: public Expression {
     Binary(Expression* left, Token op, Expression* right): left(left),op(std::move(op)),right(right){}
     [[nodiscard]] Value eval() const override{
-        return Value { std::get<double>(left->eval())+ std::get<double>(right->eval()) };
+        if(op.type == TokenType::PLUS){
+           return Value { std::get<double>(left->eval())+ std::get<double>(right->eval()) };
+        } else if(op.type == TokenType::MINUS){
+           return Value { std::get<double>(left->eval())- std::get<double>(right->eval()) };
+        }
     }
     Expression *left;
     Token op;
@@ -52,15 +56,13 @@ public:
         //while(!isAtEnd())
         auto left = literal();
 
-        if(isAtEnd()){
-            return left;  //return type => Literal
+        while (!isAtEnd()){
+            auto op = tokens[current++];
+            auto right = literal();
+            left = new Binary(left,op,right);
         }
-        auto op = tokens[current++];
 
-        auto right = literal();
-
-        // "new" dynamic memory allocation pointer
-        return new Binary(left,op,right);  // return type => Binary
+        return left;
     };
     // is insufficient to see the left or right
     // while (!isAtEnd()){

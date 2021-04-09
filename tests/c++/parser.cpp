@@ -51,4 +51,35 @@ TEST_CASE("Parser"){
 
     // Homework: 1+2+3
     // Extra credit: 1-2-3 => -4 ,2?
+
+    // 1+2+3
+    SECTION("Multiple Binary/PLUS expression"){
+        std::string line ="1+2+3";
+
+        Scanner scanner{line};
+        auto tokens = scanner.scanTokens();
+
+        Parser parser {tokens};
+        auto expr = parser.parse();
+
+        Interpreter interpreter {expr};
+        auto value = interpreter.eval();
+        REQUIRE(value == Value(6.0));
+    }
+
+    // 1-2-3
+    SECTION("Multiple Binary/MINUS expression"){
+        std::string line ="1-2-3";
+
+        Scanner scanner{line};
+        auto tokens = scanner.scanTokens();
+
+        Parser parser {tokens};
+        auto expr = parser.parse();
+
+        Interpreter interpreter {expr};
+        auto value = interpreter.eval();
+        REQUIRE(value == Value(-4.0));
+    }
+
 }
