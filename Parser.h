@@ -87,7 +87,10 @@ public:
     explicit Interpreter( const Expression *expr) : expr(expr){}
 
     Value eval(){
-        return expr->eval();
+//         return expr->eval();
+        Value value = expr->eval();
+        delete expr;  // Problem: only the first level, doest not get deeper. OR there is not problem at all.
+        return value;
     }
 
 private:
