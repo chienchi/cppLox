@@ -6,15 +6,18 @@
 #include "Token.h"
 #include <utility>
 #include <vector>
+#include <memory>
 
 // Chapter 5
 struct Expression {
     // pure virtual function
     [[nodiscard]] virtual Value eval() const = 0;
+    virtual ~Expression() = default;
 };
+
 struct Literal: public Expression {
     explicit Literal(Value value) : value(std::move(value)){}
-
+    ~Literal() override = default;
     [[nodiscard]] Value eval() const override{
         return value;
     }
@@ -22,17 +25,22 @@ struct Literal: public Expression {
 };
 
 struct Binary: public Expression {
-    Binary(Expression* left, Token op, Expression* right): left(left),op(std::move(op)),right(right){}
+    Binary(std::shared_ptr<Expression> left, Token op,std::shared_ptr<Expression> right): left(std::move(left)), op(std::move(op)), right(std::move(right)){}
+    ~Binary() override = default;
     [[nodiscard]] Value eval() const override{
         if(op.type == TokenType::PLUS){
-           return Value { std::get<double>(left->eval())+ std::get<double>(right->eval()) };
+           return Value { std::get<double>(left->eval()) + std::get<double>(right->eval()) };
         } else if(op.type == TokenType::MINUS){
-           return Value { std::get<double>(left->eval())- std::get<double>(right->eval()) };
+           return Value { std::get<double>(left->eval()) - std::get<double>(right->eval()) };
+        } else if(op.type == TokenType::STAR){
+            return Value { std::get<double>(left->eval()) * std::get<double>(right->eval()) };
+        } else if(op.type == TokenType::SLASH){
+            return Value { std::get<double>(left->eval()) / std::get<double>(right->eval()) };
         }
     }
-    Expression *left;
+    std::shared_ptr<Expression> left;
     Token op;
-    Expression *right;
+    std::shared_ptr<Expression> right;
 };
 
 // Chapter 6
@@ -43,26 +51,43 @@ public:
     bool isAtEnd(){
         return current >= tokens.size();
     }
-    Expression *literal(){
+    std::shared_ptr<Expression> literal(){
         // "aggregate" initialization
         // "new" dynamic memory allocation pointer
-        return new Literal(tokens[current++].literal);
+        return std::shared_ptr<Expression>(new Literal(tokens[current++].literal));
     };
-    Expression *parse(){
-        // Grammars:
-        //   expression := literal | binary
-        //   binary := literal + op + literal
-        //   literal := Number
-        //while(!isAtEnd())
+    std::shared_ptr<Expression> binary_right_recursion(){
+        auto left = literal();
+        if (isAtEnd()){
+            return left;
+        }else{
+            // Right recursion
+            //   binary := literal op binary (right recursion)
+            //   1 -2 -3   => (1 - (2 -3))
+            auto op = tokens[current++];
+            auto right = binary();   //literal();
+            return std::shared_ptr<Expression>(new Binary(left, op, right)); // return type  ==> Binary
+        }
+    }
+    std::shared_ptr<Expression> binary(){
+        //   binary := literal + (op + literal)*
         auto left = literal();
 
-        while (!isAtEnd()){
+        while(!isAtEnd()){
             auto op = tokens[current++];
             auto right = literal();
-            left = new Binary(left,op,right);
+            left = std::shared_ptr<Expression>(new Binary(left, op, right));
         }
-
         return left;
+    }
+    std::shared_ptr<Expression> parse(){
+        // Grammars:
+        //   expression := literal | binary
+        //   binary := binary op literal (left recursion, infinite recursion)
+        //   1 -2 - 3  => ((1-2)-3)
+        //   literal := Number
+
+        return binary();
     };
     // is insufficient to see the left or right
     // while (!isAtEnd()){
@@ -84,17 +109,16 @@ private:
 // Chapter 7
 class Interpreter{
 public:
-    explicit Interpreter( const Expression *expr) : expr(expr){}
+    explicit Interpreter( const std::shared_ptr<Expression> expr) : expr(expr){}
 
     Value eval(){
-//         return expr->eval();
         Value value = expr->eval();
-        delete expr;  // Problem: only the first level, doest not get deeper. OR there is not problem at all.
+        //delete expr; // Problem only the first level, doesn't not get deeper.
         return value;
     }
 
 private:
-    const Expression *expr;
+    const std::shared_ptr<Expression> expr;
 };
 
 #endif //CPPLOX_PARSER_H
