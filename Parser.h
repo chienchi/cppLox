@@ -25,7 +25,9 @@ struct Literal: public Expression {
 };
 
 struct Binary: public Expression {
-    Binary(std::shared_ptr<Expression> left, Token op,std::shared_ptr<Expression> right): left(std::move(left)), op(std::move(op)), right(std::move(right)){}
+    Binary(std::unique_ptr<Expression>&& left, Token op, std::unique_ptr<Expression>&& right): 
+           left(std::move(left)), op(std::move(op)), right(std::move(right)){}
+
     ~Binary() override = default;
     [[nodiscard]] Value eval() const override{
         if(op.type == TokenType::PLUS){
@@ -38,9 +40,9 @@ struct Binary: public Expression {
             return Value { std::get<double>(left->eval()) / std::get<double>(right->eval()) };
         }
     }
-    std::shared_ptr<Expression> left;
+    std::unique_ptr<Expression> left;
     Token op;
-    std::shared_ptr<Expression> right;
+    std::unique_ptr<Expression> right;
 };
 
 // Chapter 6
@@ -51,12 +53,12 @@ public:
     bool isAtEnd(){
         return current >= tokens.size();
     }
-    std::shared_ptr<Expression> literal(){
+    std::unique_ptr<Expression> literal(){
         // "aggregate" initialization
         // "new" dynamic memory allocation pointer
-        return std::shared_ptr<Expression>(new Literal(tokens[current++].literal));
+        return std::unique_ptr<Expression>(new Literal(tokens[current++].literal));
     };
-    std::shared_ptr<Expression> binary_right_recursion(){
+    std::unique_ptr<Expression> binary_right_recursion(){
         auto left = literal();
         if (isAtEnd()){
             return left;
@@ -66,21 +68,21 @@ public:
             //   1 -2 -3   => (1 - (2 -3))
             auto op = tokens[current++];
             auto right = binary();   //literal();
-            return std::shared_ptr<Expression>(new Binary(left, op, right)); // return type  ==> Binary
+            return std::unique_ptr<Expression>(new Binary(std::move(left), op, std::move(right))); // return type  ==> Binary
         }
     }
-    std::shared_ptr<Expression> binary(){
+    std::unique_ptr<Expression> binary(){
         //   binary := literal + (op + literal)*
         auto left = literal();
 
         while(!isAtEnd()){
             auto op = tokens[current++];
             auto right = literal();
-            left = std::shared_ptr<Expression>(new Binary(left, op, right));
+            left = std::unique_ptr<Expression>(new Binary(std::move(left), op, std::move(right)));
         }
         return left;
     }
-    std::shared_ptr<Expression> parse(){
+    std::unique_ptr<Expression> parse(){
         // Grammars:
         //   expression := literal | binary
         //   binary := binary op literal (left recursion, infinite recursion)
@@ -109,16 +111,14 @@ private:
 // Chapter 7
 class Interpreter{
 public:
-    explicit Interpreter( const std::shared_ptr<Expression> expr) : expr(expr){}
+    explicit Interpreter(std::unique_ptr<Expression>&& expr) : expr(std::move(expr)){}
 
     Value eval(){
-        Value value = expr->eval();
-        //delete expr; // Problem only the first level, doesn't not get deeper.
-        return value;
+        return expr->eval();
     }
 
 private:
-    const std::shared_ptr<Expression> expr;
+    std::unique_ptr<Expression> expr;
 };
 
 #endif //CPPLOX_PARSER_H

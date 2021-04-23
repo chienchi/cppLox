@@ -20,7 +20,7 @@ TEST_CASE("Parser"){
 
         //REQUIRE(expr->eval() == Value(1.0));
 
-        Interpreter interpreter {expr};
+        Interpreter interpreter {std::move(expr)};
         auto value = interpreter.eval();
         REQUIRE(value == Value(1.0));
 
@@ -44,7 +44,7 @@ TEST_CASE("Parser"){
 
         //REQUIRE(expr->eval() == Value(3.0));
 
-        Interpreter interpreter {expr};
+        Interpreter interpreter {std::move(expr)};
         auto value = interpreter.eval();
         REQUIRE(value == Value(3.0));
     }
@@ -62,7 +62,7 @@ TEST_CASE("Parser"){
         Parser parser {tokens};
         auto expr = parser.parse();
 
-        Interpreter interpreter {expr};
+        Interpreter interpreter {std::move(expr)};
         auto value = interpreter.eval();
         REQUIRE(value == Value(6.0));
     }
@@ -77,7 +77,7 @@ TEST_CASE("Parser"){
         Parser parser {tokens};
         auto expr = parser.parse();
 
-        Interpreter interpreter {expr};
+        Interpreter interpreter {std::move(expr)};
         auto value = interpreter.eval();
         REQUIRE(value == Value(-4.0));
     }
