@@ -56,7 +56,7 @@ public:
     std::unique_ptr<Expression> literal(){
         // "aggregate" initialization
         // "new" dynamic memory allocation pointer
-        return std::unique_ptr<Expression>(new Literal(tokens[current++].literal));
+        return std::make_unique<Literal>(tokens[current++].literal);
     };
     std::unique_ptr<Expression> binary_right_recursion(){
         auto left = literal();
@@ -67,30 +67,54 @@ public:
             //   binary := literal op binary (right recursion)
             //   1 -2 -3   => (1 - (2 -3))
             auto op = tokens[current++];
-            auto right = binary();   //literal();
-            return std::unique_ptr<Expression>(new Binary(std::move(left), op, std::move(right))); // return type  ==> Binary
+            auto right = mul_binary();   //literal();
+            return std::make_unique<Binary>(std::move(left), op, std::move(right)); // return type  ==> Binary
         }
     }
-    std::unique_ptr<Expression> binary(){
+    std::unique_ptr<Expression> mul_binary(){
         //   binary := literal + (op + literal)*
+        //   mul_binary := literal ('*/' literal)*
         auto left = literal();
 
         while(!isAtEnd()){
             auto op = tokens[current++];
             auto right = literal();
-            left = std::unique_ptr<Expression>(new Binary(std::move(left), op, std::move(right)));
+            left = std::make_unique<Binary>(std::move(left), op, std::move(right));
         }
         return left;
     }
+
+    std::unique_ptr<Expression> add_binary() {
+        //   add_binary := mul_binary ('+-' mul_binary)*
+        auto left=mul_binary();
+
+        // match()
+        // peek()
+        // previous() ...
+
+        while(!isAtEnd()){
+            auto op = tokens[current++];
+            // Homework: if (??) is needed?
+            auto right = mul_binary();
+            left = std::make_unique<Binary>(std::move(left), op, std::move(right));
+        }
+        return left;
+    }
+
+    std::unique_ptr<Expression> expression(){
+        //   expression := add_binary
+        return add_binary();
+    };
+
     std::unique_ptr<Expression> parse(){
         // Grammars:
-        //   expression := literal | binary
-        //   binary := binary op literal (left recursion, infinite recursion)
-        //   1 -2 - 3  => ((1-2)-3)
-        //   literal := Number
+        //   expression := add_binary
+        //   add_binary := mul_binary ('+-' mul_binary)*
+        //   mul_binary := literal ('*/' literal)*
+        //   literal  := Number
 
-        return binary();
-    };
+        return expression();
+    }
     // is insufficient to see the left or right
     // while (!isAtEnd()){
     //        switch(current_token){
