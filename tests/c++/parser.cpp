@@ -82,4 +82,19 @@ TEST_CASE("Parser"){
         REQUIRE(value == Value(-4.0));
     }
 
+    // 1+2*3
+    SECTION("Mix multiply/divsion and addition/minus expression"){
+        std::string line ="1+2*3";
+
+        Scanner scanner{line};
+        auto tokens = scanner.scanTokens();
+
+        Parser parser {tokens};
+        auto expr = parser.parse();
+
+        Interpreter interpreter {std::move(expr)};
+        auto value = interpreter.eval();
+        REQUIRE(value == Value(7.0));
+    }
+
 }

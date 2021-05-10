@@ -50,9 +50,7 @@ class Parser {
 public:
     explicit Parser(std::vector<Token>  tokens) : tokens(std::move(tokens)){}
 
-    bool isAtEnd(){
-        return current >= tokens.size();
-    }
+
     std::unique_ptr<Expression> literal(){
         // "aggregate" initialization
         // "new" dynamic memory allocation pointer
@@ -76,8 +74,8 @@ public:
         //   mul_binary := literal ('*/' literal)*
         auto left = literal();
 
-        while(!isAtEnd()){
-            auto op = tokens[current++];
+        while(match(TokenType::STAR) or match(TokenType::SLASH)){
+            auto op = previous();
             auto right = literal();
             left = std::make_unique<Binary>(std::move(left), op, std::move(right));
         }
@@ -92,8 +90,8 @@ public:
         // peek()
         // previous() ...
 
-        while(!isAtEnd()){
-            auto op = tokens[current++];
+        while(match(TokenType::PLUS) or match(TokenType::MINUS)){
+            auto op = previous();
             // Homework: if (??) is needed?
             auto right = mul_binary();
             left = std::make_unique<Binary>(std::move(left), op, std::move(right));
@@ -125,7 +123,13 @@ public:
     //                //error
     //        }
     // }
-
+private:
+    bool match (TokenType type);
+    bool check (TokenType type);
+    Token peek();
+    Token advance();
+    Token previous();
+    bool isAtEnd();
 
 private:
     std::vector<Token> tokens;
