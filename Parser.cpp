@@ -6,16 +6,14 @@
 bool Parser::isAtEnd(){
     return current >= tokens.size();
 }
-bool Parser::match (TokenType type){
-    if (check(type)){
+
+bool Parser::check (TokenType type){
+    if(isAtEnd()) return false;
+    if(peek().type == type) {
         advance();
         return true;
     }
     return false;
-}
-bool Parser::check (TokenType type){
-    if(isAtEnd()) return false;
-    return peek().type == type;
 }
 Token Parser::peek(){
     return tokens[current];
