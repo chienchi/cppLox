@@ -74,7 +74,7 @@ public:
         //   mul_binary := literal ('*/' literal)*
         auto left = literal();
 
-        while(match(TokenType::STAR) or match(TokenType::SLASH)){
+        while(match(TokenType::STAR, TokenType::SLASH)){
             auto op = previous();
             auto right = literal();
             left = std::make_unique<Binary>(std::move(left), op, std::move(right));
@@ -90,7 +90,7 @@ public:
         // peek()
         // previous() ...
 
-        while(match(TokenType::PLUS) or match(TokenType::MINUS)){
+        while(match(TokenType::PLUS, TokenType::MINUS)){
             auto op = previous();
             // Homework: if (??) is needed?
             auto right = mul_binary();
@@ -124,7 +124,16 @@ public:
     //        }
     // }
 private:
-    bool match (TokenType type);
+
+    // template in .h
+    template<typename... Ts>
+    bool match (Ts... types){
+        return (... || check(types));
+        // map, apply/mapping a function to elements in a "container"
+        // ex. 1. map check() types => check(types[0]), check(types[1]) ... check(types[n])
+        // reduce, apply a binary operator to elements in a "container" and return a single value.
+        // ex. reduce || to ex. 1 => check(types[0]) || check(types[1]) ... ||  check(types[n]) => true/false
+    }
     bool check (TokenType type);
     Token peek();
     Token advance();
