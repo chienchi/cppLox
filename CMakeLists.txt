@@ -3,7 +3,7 @@ project(cppLox)
 
 set(CMAKE_CXX_STANDARD 17)
 
-find_package(Catch2 QUIET)
+find_package(Catch2)
 
 enable_testing()
 

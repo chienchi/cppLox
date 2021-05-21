@@ -6,7 +6,7 @@
 // Token(VAR), Token(ID), Token(EQUAL), Token(STRING), Token(SEMICOLON)
 
 #include <iostream>
-#include "catch.hpp"
+#include <catch2/catch.hpp>
 #include "scanner.h"
 
 TEST_CASE("Scanner"){

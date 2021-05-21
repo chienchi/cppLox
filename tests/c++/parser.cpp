@@ -1,7 +1,7 @@
 
 
 #include <iostream>
-#include "catch.hpp"
+#include <catch2/catch.hpp>
 #include "scanner.h"
 #include "Parser.h"
 

@@ -5,7 +5,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
-#include "catch.hpp"
+#include <catch2/catch.hpp>
 
 void test_fun(){
 
