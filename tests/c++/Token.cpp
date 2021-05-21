@@ -3,7 +3,13 @@
 //
 
 #include <sstream>
-#include <catch2/catch.hpp>
+#if defined __has_include
+#  if __has_include (<catch2/catch.hpp>)
+#     include <catch2/catch.cpp>
+#  elif __has_include("catch.hpp")
+#     include "catch.hpp"
+#  endif
+#endif
 #include "Token.h"
 
 TEST_CASE("Token"){

@@ -6,7 +6,13 @@
 // Token(VAR), Token(ID), Token(EQUAL), Token(STRING), Token(SEMICOLON)
 
 #include <iostream>
-#include <catch2/catch.hpp>
+#if defined __has_include
+#  if __has_include (<catch2/catch.hpp>)
+#     include <catch2/catch.cpp>
+#  elif __has_include("catch.hpp")
+#     include "catch.hpp"
+#  endif
+#endif
 #include "scanner.h"
 
 TEST_CASE("Scanner"){
