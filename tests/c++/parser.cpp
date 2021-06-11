@@ -101,8 +101,73 @@ TEST_CASE("Parser") {
     auto value = interpreter.eval();
     REQUIRE(value == Value(7.0));
   }
-  SECTION("Test Equality") {
+  SECTION("Test Equality (double)") {
     std::string line = "1==1";
+
+    Scanner scanner{line};
+    auto tokens = scanner.scanTokens();
+
+    Parser parser{tokens};
+    auto expr = parser.parse();
+
+    Interpreter interpreter{std::move(expr)};
+    auto value = interpreter.eval();
+    REQUIRE(value == Value(true));
+  }
+  SECTION("Test Inequality (double)") {
+    std::string line = "1!=2";
+
+    Scanner scanner{line};
+    auto tokens = scanner.scanTokens();
+
+    Parser parser{tokens};
+    auto expr = parser.parse();
+
+    Interpreter interpreter{std::move(expr)};
+    auto value = interpreter.eval();
+    REQUIRE(value == Value(true));
+  }
+  SECTION("Test Equality (boolean)") {
+    std::string line = "true==true";
+
+    Scanner scanner{line};
+    auto tokens = scanner.scanTokens();
+
+    Parser parser{tokens};
+    auto expr = parser.parse();
+
+    Interpreter interpreter{std::move(expr)};
+    auto value = interpreter.eval();
+    REQUIRE(value == Value(true));
+  }
+  SECTION("Test Inequality (boolean)") {
+    std::string line = "true!=true";
+
+    Scanner scanner{line};
+    auto tokens = scanner.scanTokens();
+
+    Parser parser{tokens};
+    auto expr = parser.parse();
+
+    Interpreter interpreter{std::move(expr)};
+    auto value = interpreter.eval();
+    REQUIRE(value == Value(false));
+  }
+  SECTION("Test Equality (string)") {
+    std::string line = R"("string"=="String")";
+
+    Scanner scanner{line};
+    auto tokens = scanner.scanTokens();
+
+    Parser parser{tokens};
+    auto expr = parser.parse();
+
+    Interpreter interpreter{std::move(expr)};
+    auto value = interpreter.eval();
+    REQUIRE(value == Value(false));
+  }
+  SECTION("Test Inequality (string)") {
+    std::string line = R"("string"!="String")";
 
     Scanner scanner{line};
     auto tokens = scanner.scanTokens();
@@ -127,6 +192,7 @@ TEST_CASE("Parser") {
     auto value = interpreter.eval();
     REQUIRE(value == Value(true));
   }
+
   SECTION("Test unary") {
     std::string line = "2+-1";
 
@@ -139,5 +205,8 @@ TEST_CASE("Parser") {
     Interpreter interpreter{std::move(expr)};
     auto value = interpreter.eval();
     REQUIRE(value == Value(1.0));
+  }
+  SECTION("Parenthesis") {
+    // TBD
   }
 }

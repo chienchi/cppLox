@@ -23,6 +23,7 @@ struct Binary : public Expression {
       : left(std::move(left)), op(std::move(op)), right(std::move(right)) {}
 
   ~Binary() override = default;
+
   [[nodiscard]] Value eval() const override {
     if (op.type == TokenType::PLUS) {
       return Value{std::get<double>(left->eval()) +
@@ -36,8 +37,14 @@ struct Binary : public Expression {
     } else if (op.type == TokenType::SLASH) {
       return Value{std::get<double>(left->eval()) /
                    std::get<double>(right->eval())};
+    } else if (op.type == TokenType::EQUAL_EQUAL) {
+      // Homework: what happen if left and right are of different types?
+      return Value{left->eval() == right->eval()};
+    } else if (op.type == TokenType::BANG_EQUAL) {
+      return Value{left->eval() != right->eval()};
     }
   }
+
   std::unique_ptr<Expression> left;
   Token op;
   std::unique_ptr<Expression> right;

@@ -54,16 +54,32 @@ public:
 
     while (match(TokenType::PLUS, TokenType::MINUS)) {
       auto op = previous();
-      // Homework: if (??) is needed?
       auto right = factor();
       left = std::make_unique<Binary>(std::move(left), op, std::move(right));
     }
     return left;
   }
 
-  std::unique_ptr<Expression> expression() {
-    //   expression := term
+  std::unique_ptr<Expression> comparison() {
+    // More todo.
     return term();
+  }
+
+  std::unique_ptr<Expression> equality() {
+    // equality       → comparison ( ( "!=" | "==" ) comparison )* ;
+    auto left = comparison();
+
+    while (match(TokenType::EQUAL_EQUAL, TokenType::BANG_EQUAL)) {
+      auto op = previous();
+      auto right = comparison();
+      left = std::make_unique<Binary>(std::move(left), op, std::move(right));
+    }
+    return left;
+  }
+
+  std::unique_ptr<Expression> expression() {
+    // expression     → equality ;
+    return equality();
   };
 
   std::unique_ptr<Expression> parse() {
