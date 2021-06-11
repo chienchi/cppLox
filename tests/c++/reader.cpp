@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+
 #if defined __has_include
 #if __has_include(<catch2/catch.hpp>)
 #include <catch2/catch.hpp>
