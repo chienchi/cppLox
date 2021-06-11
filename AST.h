@@ -3,6 +3,9 @@
 
 #include <memory>
 
+#include "value.h"
+#include "Token.h"
+
 // Chapter 5
 struct Expression {
   // pure virtual function

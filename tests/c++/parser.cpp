@@ -190,7 +190,7 @@ TEST_CASE("Parser") {
 
     Interpreter interpreter{std::move(expr)};
     auto value = interpreter.eval();
-    REQUIRE(value== Value(true));
+    REQUIRE(value == Value(true));
   }
 
   SECTION("Test comparison (great)") {
