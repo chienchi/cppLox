@@ -58,6 +58,7 @@ public:
     // "new" dynamic memory allocation pointer
     return std::make_unique<Literal>(tokens[current++].literal);
   };
+
   std::unique_ptr<Expression> binary_right_recursion() {
     auto left = literal();
     if (isAtEnd()) {
@@ -67,14 +68,15 @@ public:
       //   binary := literal op binary (right recursion)
       //   1 -2 -3   => (1 - (2 -3))
       auto op = tokens[current++];
-      auto right = mul_binary(); // literal();
+      auto right = factor(); // literal();
       return std::make_unique<Binary>(
           std::move(left), op, std::move(right)); // return type  ==> Binary
     }
   }
-  std::unique_ptr<Expression> mul_binary() {
+
+  std::unique_ptr<Expression> factor() {
     //   binary := literal + (op + literal)*
-    //   mul_binary := literal ('*/' literal)*
+    //   factor := literal ('*/' literal)*
     auto left = literal();
 
     while (match(TokenType::STAR, TokenType::SLASH)) {
@@ -85,37 +87,44 @@ public:
     return left;
   }
 
-  std::unique_ptr<Expression> add_binary() {
-    //   add_binary := mul_binary ('+-' mul_binary)*
-    auto left = mul_binary();
-
-    // match()
-    // peek()
-    // previous() ...
+  std::unique_ptr<Expression> term() {
+    //   term := factor ('+-' factor)*
+    auto left = factor();
 
     while (match(TokenType::PLUS, TokenType::MINUS)) {
       auto op = previous();
       // Homework: if (??) is needed?
-      auto right = mul_binary();
+      auto right = factor();
       left = std::make_unique<Binary>(std::move(left), op, std::move(right));
     }
     return left;
   }
 
   std::unique_ptr<Expression> expression() {
-    //   expression := add_binary
-    return add_binary();
+    //   expression := term
+    return term();
   };
 
   std::unique_ptr<Expression> parse() {
     // Grammars:
-    //   expression := add_binary
-    //   add_binary := mul_binary ('+-' mul_binary)*
-    //   mul_binary := literal ('*/' literal)*
+    //   expression := term
+    //   term := mul_binary ('+-' factor)*
+    //   factor := literal ('*/' literal)*
     //   literal  := Number
-
+    /*
+     * expression     → equality ;
+     * equality       → comparison ( ( "!=" | "==" ) comparison )* ;
+     * comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
+     * term           → factor ( ( "-" | "+" ) factor )* ;
+     * factor         → unary ( ( "/" | "*" ) unary )* ;
+     * unary          → ( "!" | "-" ) unary
+     *                  | primary ;
+     * primary        → NUMBER | STRING | "true" | "false" | "nil"
+     *                  | "(" expression ")" ;
+     */
     return expression();
   }
+
   // is insufficient to see the left or right
   // while (!isAtEnd()){
   //        switch(current_token){
@@ -126,6 +135,7 @@ public:
   //                //error
   //        }
   // }
+
 private:
   // template in .h
   template <typename... Ts> bool match(Ts... types) {
