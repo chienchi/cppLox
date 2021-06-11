@@ -179,8 +179,61 @@ TEST_CASE("Parser") {
     auto value = interpreter.eval();
     REQUIRE(value == Value(true));
   }
-  SECTION("Test comparison") {
+  SECTION("Test Inequality (different type)") {
+    std::string line = R"( true !="String")";
+
+    Scanner scanner{line};
+    auto tokens = scanner.scanTokens();
+
+    Parser parser{tokens};
+    auto expr = parser.parse();
+
+    Interpreter interpreter{std::move(expr)};
+    auto value = interpreter.eval();
+    REQUIRE(value== Value(true));
+  }
+
+  SECTION("Test comparison (great)") {
     std::string line = "2>1";
+
+    Scanner scanner{line};
+    auto tokens = scanner.scanTokens();
+
+    Parser parser{tokens};
+    auto expr = parser.parse();
+
+    Interpreter interpreter{std::move(expr)};
+    auto value = interpreter.eval();
+    REQUIRE(value == Value(true));
+  }
+  SECTION("Test comparison (less)") {
+    std::string line = "2<1";
+
+    Scanner scanner{line};
+    auto tokens = scanner.scanTokens();
+
+    Parser parser{tokens};
+    auto expr = parser.parse();
+
+    Interpreter interpreter{std::move(expr)};
+    auto value = interpreter.eval();
+    REQUIRE(value == Value(false));
+  }
+  SECTION("Test comparison (less equal)") {
+    std::string line = "2<=1";
+
+    Scanner scanner{line};
+    auto tokens = scanner.scanTokens();
+
+    Parser parser{tokens};
+    auto expr = parser.parse();
+
+    Interpreter interpreter{std::move(expr)};
+    auto value = interpreter.eval();
+    REQUIRE(value == Value(false));
+  }
+  SECTION("Test comparison (great equal)") {
+    std::string line = "2>=2";
 
     Scanner scanner{line};
     auto tokens = scanner.scanTokens();

@@ -61,8 +61,14 @@ public:
   }
 
   std::unique_ptr<Expression> comparison() {
-    // More todo.
-    return term();
+      //comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
+      auto left = term();
+      while (match(TokenType::GREATER, TokenType::GREATER_EQUAL,TokenType::LESS_EQUAL,TokenType::LESS)) {
+          auto op = previous();
+          auto right = term();
+          left = std::make_unique<Binary>(std::move(left), op, std::move(right));
+      }
+      return left;
   }
 
   std::unique_ptr<Expression> equality() {

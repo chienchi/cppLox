@@ -42,6 +42,14 @@ struct Binary : public Expression {
       return Value{left->eval() == right->eval()};
     } else if (op.type == TokenType::BANG_EQUAL) {
       return Value{left->eval() != right->eval()};
+    } else if (op.type == TokenType::LESS_EQUAL){
+        return Value{std::get<double>(left->eval()) <= std::get<double>(right->eval())};
+    } else if (op.type == TokenType::LESS){
+        return Value{std::get<double>(left->eval()) < std::get<double>(right->eval())};
+    } else if (op.type == TokenType::GREATER_EQUAL){
+        return Value{std::get<double>(left->eval()) >= std::get<double>(right->eval())};
+    } else if (op.type == TokenType::GREATER){
+        return Value{std::get<double>(left->eval()) > std::get<double>(right->eval())};
     }
   }
 
