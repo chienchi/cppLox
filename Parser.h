@@ -1,8 +1,8 @@
 #ifndef CPPLOX_PARSER_H
 #define CPPLOX_PARSER_H
 
-#include "Token.h"
 #include "AST.h"
+#include "Token.h"
 
 #include <memory>
 #include <string>
@@ -61,14 +61,15 @@ public:
   }
 
   std::unique_ptr<Expression> comparison() {
-      //comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
-      auto left = term();
-      while (match(TokenType::GREATER, TokenType::GREATER_EQUAL,TokenType::LESS_EQUAL,TokenType::LESS)) {
-          auto op = previous();
-          auto right = term();
-          left = std::make_unique<Binary>(std::move(left), op, std::move(right));
-      }
-      return left;
+    // comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
+    auto left = term();
+    while (match(TokenType::GREATER, TokenType::GREATER_EQUAL,
+                 TokenType::LESS_EQUAL, TokenType::LESS)) {
+      auto op = previous();
+      auto right = term();
+      left = std::make_unique<Binary>(std::move(left), op, std::move(right));
+    }
+    return left;
   }
 
   std::unique_ptr<Expression> equality() {
