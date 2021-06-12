@@ -1,13 +1,4 @@
 #set(CMAKE_CXX_FLAGS_DEBUG  "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address -fno-omit-frame-pointer ")
-Include(FetchContent)
-
-FetchContent_Declare(
-        Catch2
-        GIT_REPOSITORY  https://github.com/catchorg/Catch2.git
-        GIT_TAG v2.13.1
-)
-FetchContent_MakeAvailable(Catch2)
-
 add_library(test_main OBJECT test_main.cpp)
 
 add_executable(trivial trivial.cpp)
@@ -33,8 +24,3 @@ add_test(scanner scanner)
 add_executable(parser parser.cpp)
 target_link_libraries(parser lox test_main Catch2::Catch2)
 add_test(parser parser)
-
-list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/contrib)
-include(CTest)
-include(Catch)
-catch_discover_tests(reader token value scanner parser)
