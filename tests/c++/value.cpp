@@ -1,6 +1,8 @@
 //
 // Created by osboxes on 11/13/20.
 //
+#include "Token.h"
+#include <sstream>
 
 #if defined __has_include
 #if __has_include(<catch2/catch.hpp>)
@@ -9,8 +11,7 @@
 #include "catch.hpp"
 #endif
 #endif
-#include "Token.h"
-#include <sstream>
+
 
 TEST_CASE("Literal values") {
   SECTION("Default construction to contain nil") {

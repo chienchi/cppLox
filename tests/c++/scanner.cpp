@@ -6,6 +6,8 @@
 // Token(VAR), Token(ID), Token(EQUAL), Token(STRING), Token(SEMICOLON)
 
 #include <iostream>
+#include "scanner.h"
+
 #if defined __has_include
 #if __has_include(<catch2/catch.hpp>)
 #include <catch2/catch.hpp>
@@ -13,7 +15,7 @@
 #include "catch.hpp"
 #endif
 #endif
-#include "scanner.h"
+
 
 TEST_CASE("Scanner") {
   SECTION("approximations") {

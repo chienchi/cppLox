@@ -53,6 +53,8 @@ struct Binary : public Expression {
         return Value{std::get<double>(left->eval()) >= std::get<double>(right->eval())};
     } else if (op.type == TokenType::GREATER){
         return Value{std::get<double>(left->eval()) > std::get<double>(right->eval())};
+    } else {
+        return Value{};
     }
   }
 

@@ -1,6 +1,7 @@
 //
 // Created by osboxes on 10/16/20.
 //
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -14,9 +15,9 @@
 #endif
 #endif
 
-void test_fun() {}
+//void test_fun() {}
 
-TEST_CASE("Reading from a source file") {
+TEST_CASE("Reading from a source file"){
 
   // TODO
   // 1. Add CppLox.cpp and main()
@@ -26,7 +27,7 @@ TEST_CASE("Reading from a source file") {
   // 5. Error and exception handling
   // 6. Token and TokenType
   //
-  std::ifstream s("../../Lox/hello.lox");
+  std::ifstream s("../../../Lox/hello.lox");
   REQUIRE(s.is_open() == true);
 
   // Read from 'source' into a std::string
