@@ -63,4 +63,26 @@ struct Binary : public Expression {
   std::unique_ptr<Expression> right;
 };
 
+
+struct Unary : public Expression {
+  Unary(Token op,std::unique_ptr<Expression> &&right)
+      : op(std::move(op)), right(std::move(right)) {}
+
+  ~Unary() override = default;
+
+  [[nodiscard]] Value eval() const override {
+    if (op.type == TokenType::BANG) {
+      return Value{!std::get<bool>(right->eval())};
+    } else if (op.type == TokenType::MINUS) {
+      return Value{-std::get<double>(right->eval())};
+    } else {
+        return Value{};
+    }
+  }
+
+  Token op;
+  std::unique_ptr<Expression> right;
+};
+
+
 #endif // CPPLOX_AST_H

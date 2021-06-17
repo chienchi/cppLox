@@ -35,10 +35,32 @@ public:
     }
   }
 
+  std::unique_ptr<Expression> primary() {
+    if(match(TokenType::LEFT_PAREN)) {
+      auto expr = expression();
+      if(match(TokenType::RIGHT_PAREN)) {
+        return expr;
+      }
+    }
+    return literal();
+  }
+
+  std::unique_ptr<Expression> unary() {
+    //   unary  :=  ( "!" | "-" ) unary | primary ;
+
+    while (match(TokenType::BANG, TokenType::MINUS)) {
+      auto op = previous();
+      auto right = unary();
+      return std::make_unique<Unary>(op, std::move(right));
+    }
+
+    return primary();
+  }
+
+
   std::unique_ptr<Expression> factor() {
-    //   binary := literal + (op + literal)*
-    //   factor := literal ('*/' literal)*
-    auto left = literal();
+    //   factor := unary ('*/' unary)*
+    auto left = unary();
 
     while (match(TokenType::STAR, TokenType::SLASH)) {
       auto op = previous();

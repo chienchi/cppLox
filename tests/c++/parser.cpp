@@ -259,6 +259,16 @@ TEST_CASE("Parser") {
     }
 
     SECTION("Parenthesis") {
-        // TBD
+        std::string line = "2-(1+3)";
+
+        Scanner scanner{line};
+        auto tokens = scanner.scanTokens();
+
+        Parser parser{tokens};
+        auto expr = parser.parse();
+
+        Interpreter interpreter{std::move(expr)};
+        auto value = interpreter.eval();
+        REQUIRE(value == Value(-2.0));
     }
 }
