@@ -6,7 +6,7 @@
 #include "value.h"
 #include "Token.h"
 
-// Chapter 5
+// Chapter 5 Abstract Syntax Tree
 struct Expression {
   // pure virtual function
   [[nodiscard]] virtual Value eval() const = 0;

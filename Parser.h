@@ -40,7 +40,7 @@ public:
       auto expr = expression();
       if(match(TokenType::RIGHT_PAREN)) {
         return expr;
-      }
+      }//else??
     }
     return literal();
   }
@@ -48,9 +48,9 @@ public:
   std::unique_ptr<Expression> unary() {
     //   unary  :=  ( "!" | "-" ) unary | primary ;
 
-    while (match(TokenType::BANG, TokenType::MINUS)) {
+    if (match(TokenType::BANG, TokenType::MINUS)) { //don't need while loop
       auto op = previous();
-      auto right = unary();
+      auto right = unary(); // this is recursive itself
       return std::make_unique<Unary>(op, std::move(right));
     }
 
@@ -64,7 +64,7 @@ public:
 
     while (match(TokenType::STAR, TokenType::SLASH)) {
       auto op = previous();
-      auto right = literal();
+      auto right = unary();
       left = std::make_unique<Binary>(std::move(left), op, std::move(right));
     }
     return left;

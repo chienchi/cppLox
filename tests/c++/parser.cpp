@@ -245,7 +245,7 @@ TEST_CASE("Parser") {
     }
 
     SECTION("Test unary") {
-        std::string line = "2+-1";
+        std::string line = "2*-1";
 
         Scanner scanner{line};
         auto tokens = scanner.scanTokens();
@@ -255,11 +255,37 @@ TEST_CASE("Parser") {
 
         Interpreter interpreter{std::move(expr)};
         auto value = interpreter.eval();
-        REQUIRE(value == Value(1.0));
+        REQUIRE(value == Value(-2.0));
     }
 
+    SECTION("Test multiple unary") {
+        std::string line = "---1";
+
+        Scanner scanner{line};
+        auto tokens = scanner.scanTokens();
+
+        Parser parser{tokens};
+        auto expr = parser.parse();
+
+        Interpreter interpreter{std::move(expr)};
+        auto value = interpreter.eval();
+        REQUIRE(value == Value(-1.0));
+    }
     SECTION("Parenthesis") {
         std::string line = "2-(1+3)";
+
+        Scanner scanner{line};
+        auto tokens = scanner.scanTokens();
+
+        Parser parser{tokens};
+        auto expr = parser.parse();
+
+        Interpreter interpreter{std::move(expr)};
+        auto value = interpreter.eval();
+        REQUIRE(value == Value(-2.0));
+    }
+    SECTION("Nested Parenthesis") {
+        std::string line = "2-((1+3))";
 
         Scanner scanner{line};
         auto tokens = scanner.scanTokens();
