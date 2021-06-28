@@ -12,7 +12,6 @@
 #endif
 #endif
 
-
 TEST_CASE("Literal values") {
   SECTION("Default construction to contain nil") {
     auto value = Value{};

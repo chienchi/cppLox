@@ -5,8 +5,8 @@
 // "var language = 'lox';" =>
 // Token(VAR), Token(ID), Token(EQUAL), Token(STRING), Token(SEMICOLON)
 
-#include <iostream>
 #include "scanner.h"
+#include <iostream>
 
 #if defined __has_include
 #if __has_include(<catch2/catch.hpp>)
@@ -15,7 +15,6 @@
 #include "catch.hpp"
 #endif
 #endif
-
 
 TEST_CASE("Scanner") {
   SECTION("approximations") {

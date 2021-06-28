@@ -3,8 +3,8 @@
 
 #include <memory>
 
-#include "value.h"
 #include "Token.h"
+#include "value.h"
 
 // Chapter 5 Abstract Syntax Tree
 struct Expression {
@@ -45,16 +45,20 @@ struct Binary : public Expression {
       return Value{left->eval() == right->eval()};
     } else if (op.type == TokenType::BANG_EQUAL) {
       return Value{left->eval() != right->eval()};
-    } else if (op.type == TokenType::LESS_EQUAL){
-        return Value{std::get<double>(left->eval()) <= std::get<double>(right->eval())};
-    } else if (op.type == TokenType::LESS){
-        return Value{std::get<double>(left->eval()) < std::get<double>(right->eval())};
-    } else if (op.type == TokenType::GREATER_EQUAL){
-        return Value{std::get<double>(left->eval()) >= std::get<double>(right->eval())};
-    } else if (op.type == TokenType::GREATER){
-        return Value{std::get<double>(left->eval()) > std::get<double>(right->eval())};
+    } else if (op.type == TokenType::LESS_EQUAL) {
+      return Value{std::get<double>(left->eval()) <=
+                   std::get<double>(right->eval())};
+    } else if (op.type == TokenType::LESS) {
+      return Value{std::get<double>(left->eval()) <
+                   std::get<double>(right->eval())};
+    } else if (op.type == TokenType::GREATER_EQUAL) {
+      return Value{std::get<double>(left->eval()) >=
+                   std::get<double>(right->eval())};
+    } else if (op.type == TokenType::GREATER) {
+      return Value{std::get<double>(left->eval()) >
+                   std::get<double>(right->eval())};
     } else {
-        return Value{};
+      return Value{};
     }
   }
 
@@ -63,9 +67,8 @@ struct Binary : public Expression {
   std::unique_ptr<Expression> right;
 };
 
-
 struct Unary : public Expression {
-  Unary(Token op,std::unique_ptr<Expression> &&right)
+  Unary(Token op, std::unique_ptr<Expression> &&right)
       : op(std::move(op)), right(std::move(right)) {}
 
   ~Unary() override = default;
@@ -76,13 +79,12 @@ struct Unary : public Expression {
     } else if (op.type == TokenType::MINUS) {
       return Value{-std::get<double>(right->eval())};
     } else {
-        return Value{};
+      return Value{};
     }
   }
 
   Token op;
   std::unique_ptr<Expression> right;
 };
-
 
 #endif // CPPLOX_AST_H

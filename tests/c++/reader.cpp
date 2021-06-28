@@ -15,9 +15,9 @@
 #endif
 #endif
 
-//void test_fun() {}
+// void test_fun() {}
 
-TEST_CASE("Reading from a source file"){
+TEST_CASE("Reading from a source file") {
 
   // TODO
   // 1. Add CppLox.cpp and main()

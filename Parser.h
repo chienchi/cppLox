@@ -36,11 +36,11 @@ public:
   }
 
   std::unique_ptr<Expression> primary() {
-    if(match(TokenType::LEFT_PAREN)) {
+    if (match(TokenType::LEFT_PAREN)) {
       auto expr = expression();
-      if(match(TokenType::RIGHT_PAREN)) {
+      if (match(TokenType::RIGHT_PAREN)) {
         return expr;
-      }//else??
+      } // else??
     }
     return literal();
   }
@@ -48,7 +48,7 @@ public:
   std::unique_ptr<Expression> unary() {
     //   unary  :=  ( "!" | "-" ) unary | primary ;
 
-    if (match(TokenType::BANG, TokenType::MINUS)) { //don't need while loop
+    if (match(TokenType::BANG, TokenType::MINUS)) { // don't need while loop
       auto op = previous();
       auto right = unary(); // this is recursive itself
       return std::make_unique<Unary>(op, std::move(right));
@@ -56,7 +56,6 @@ public:
 
     return primary();
   }
-
 
   std::unique_ptr<Expression> factor() {
     //   factor := unary ('*/' unary)*
