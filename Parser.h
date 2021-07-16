@@ -34,13 +34,19 @@ public:
           std::move(left), op, std::move(right)); // return type  ==> Binary
     }
   }
-
+ struct parser_error : std::exception{
+     parser_error(std::string string);
+     std::string message;
+  };
   std::unique_ptr<Expression> primary() {
     if (match(TokenType::LEFT_PAREN)) {
       auto expr = expression();
       if (match(TokenType::RIGHT_PAREN)) {
         return expr;
       } // else?? FIXME: throw Parse Error, consume()?
+      else{
+          throw parser_error{"Unbalanced parenthesis!"};
+      }
     }
     return literal();
   }

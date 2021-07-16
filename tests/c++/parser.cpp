@@ -301,7 +301,16 @@ TEST_CASE("Parser") {
     //    a. create an expression with unbalanced parenthesis
     //    b. parse the expression
     //    c. expect an exception to be thrown
-    // 2. Runtime error
+      std::string line = "2-(1+3";
+
+      Scanner scanner{line};
+      auto tokens = scanner.scanTokens();
+
+      Parser parser{tokens};
+      //auto expr = parser.parse();
+      REQUIRE_THROWS(parser.parse());
+
+      // 2. Runtime error
     //    a. create binary expression with mistmached toperand ypes
     //    b. parse the epxression
     //    c. expect and exception to be thrown

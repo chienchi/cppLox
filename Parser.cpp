@@ -22,3 +22,7 @@ Token Parser::advance() {
   return previous();
 }
 Token Parser::previous() { return tokens[current - 1]; }
+
+Parser::parser_error::parser_error(std::string string):message(string) {
+
+}
