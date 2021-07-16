@@ -296,24 +296,37 @@ TEST_CASE("Parser") {
     REQUIRE(value == Value(-2.0));
   }
 
-  SECTION("Error handling") {
-    // 1. Parser error
-    //    a. create an expression with unbalanced parenthesis
-    //    b. parse the expression
-    //    c. expect an exception to be thrown
-      std::string line = "2-(1+3";
+  SECTION("Error Parser handling") {
+        // 1. Parser error
+        //    a. create an expression with unbalanced parenthesis
+        //    b. parse the expression
+        //    c. expect an exception to be thrown
+        std::string line = "2-((1+3)";
 
-      Scanner scanner{line};
-      auto tokens = scanner.scanTokens();
+        Scanner scanner{line};
+        auto tokens = scanner.scanTokens();
 
-      Parser parser{tokens};
-      //auto expr = parser.parse();
-      REQUIRE_THROWS(parser.parse());
+        Parser parser{tokens};
+        //auto expr = parser.parse();
+        REQUIRE_THROWS(parser.parse());
+  }
+  SECTION("RunTime Error"){
+        // 2. Runtime error
+        //    a. create binary expression with mistmached to per and ypes
+        //    b. parse the epxression
+        //    c. expect and exception to be thrown
+        // See catch2 documentation for item c.
 
-      // 2. Runtime error
-    //    a. create binary expression with mistmached toperand ypes
-    //    b. parse the epxression
-    //    c. expect and exception to be thrown
-    // See catch2 documentation for item c.
+        std::string line = "1 * true";
+
+        Scanner scanner{line};
+        auto tokens = scanner.scanTokens();
+
+        Parser parser{tokens};
+        auto expr = parser.parse();
+
+        Interpreter interpreter{std::move(expr)};
+        //auto value = interpreter.eval();
+        REQUIRE_THROWS_AS(interpreter.eval(),std::exception);
   }
 }
