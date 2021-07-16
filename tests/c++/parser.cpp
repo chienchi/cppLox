@@ -295,4 +295,16 @@ TEST_CASE("Parser") {
     auto value = interpreter.eval();
     REQUIRE(value == Value(-2.0));
   }
+
+  SECTION("Error handling") {
+    // 1. Parser error
+    //    a. create an expression with unbalanced parenthesis
+    //    b. parse the expression
+    //    c. expect an exception to be thrown
+    // 2. Runtime error
+    //    a. create binary expression with mistmached toperand ypes
+    //    b. parse the epxression
+    //    c. expect and exception to be thrown
+    // See catch2 documentation for item c.
+  }
 }

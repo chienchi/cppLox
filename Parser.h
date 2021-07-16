@@ -40,7 +40,7 @@ public:
       auto expr = expression();
       if (match(TokenType::RIGHT_PAREN)) {
         return expr;
-      } // else??
+      } // else?? FIXME: throw Parse Error, consume()?
     }
     return literal();
   }

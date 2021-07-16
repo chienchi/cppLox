@@ -28,6 +28,9 @@ struct Binary : public Expression {
   ~Binary() override = default;
 
   [[nodiscard]] Value eval() const override {
+    // FIXME: we need to check if the operand types are correct.
+    //  checkNumberOperand().
+    // Homework: what happen if left and right are of different types?
     if (op.type == TokenType::PLUS) {
       return Value{std::get<double>(left->eval()) +
                    std::get<double>(right->eval())};
@@ -41,7 +44,6 @@ struct Binary : public Expression {
       return Value{std::get<double>(left->eval()) /
                    std::get<double>(right->eval())};
     } else if (op.type == TokenType::EQUAL_EQUAL) {
-      // Homework: what happen if left and right are of different types?
       return Value{left->eval() == right->eval()};
     } else if (op.type == TokenType::BANG_EQUAL) {
       return Value{left->eval() != right->eval()};
