@@ -51,42 +51,44 @@ struct Binary : public Expression {
         // FIXME: we need to check if the operand types are correct.
         //  checkNumberOperand().
         // Homework: what happen if left and right are of different types?
+        Value rightV = right->eval();
+        Value leftV = left->eval();
         if (op.type == TokenType::PLUS) {
-            checkNumberOperands(op, left->eval(), right->eval());
-            return Value{std::get<double>(left->eval()) +
-                         std::get<double>(right->eval())};
+            checkNumberOperands(op, leftV, rightV);
+            return Value{std::get<double>(leftV) +
+                         std::get<double>(rightV)};
         } else if (op.type == TokenType::MINUS) {
-            checkNumberOperands(op, left->eval(), right->eval());
-            return Value{std::get<double>(left->eval()) -
-                         std::get<double>(right->eval())};
+            checkNumberOperands(op, leftV, rightV);
+            return Value{std::get<double>(leftV) -
+                         std::get<double>(rightV)};
         } else if (op.type == TokenType::STAR) {
-            checkNumberOperands(op, left->eval(), right->eval());
-            return Value{std::get<double>(left->eval()) *
-                         std::get<double>(right->eval())};
+            checkNumberOperands(op, leftV, rightV);
+            return Value{std::get<double>(leftV) *
+                         std::get<double>(rightV)};
         } else if (op.type == TokenType::SLASH) {
-            checkNumberOperands(op, left->eval(), right->eval());
-            return Value{std::get<double>(left->eval()) /
-                         std::get<double>(right->eval())};
+            checkNumberOperands(op, leftV, rightV);
+            return Value{std::get<double>(leftV) /
+                         std::get<double>(rightV)};
         } else if (op.type == TokenType::EQUAL_EQUAL) {
-            return Value{left->eval() == right->eval()};
+            return Value{leftV == rightV};
         } else if (op.type == TokenType::BANG_EQUAL) {
-            return Value{left->eval() != right->eval()};
+            return Value{leftV != rightV};
         } else if (op.type == TokenType::LESS_EQUAL) {
-            checkNumberOperands(op, left->eval(), right->eval());
-            return Value{std::get<double>(left->eval()) <=
-                         std::get<double>(right->eval())};
+            checkNumberOperands(op, leftV, rightV);
+            return Value{std::get<double>(leftV) <=
+                         std::get<double>(rightV)};
         } else if (op.type == TokenType::LESS) {
-            checkNumberOperands(op, left->eval(), right->eval());
-            return Value{std::get<double>(left->eval()) <
-                         std::get<double>(right->eval())};
+            checkNumberOperands(op, leftV, rightV);
+            return Value{std::get<double>(leftV) <
+                         std::get<double>(rightV)};
         } else if (op.type == TokenType::GREATER_EQUAL) {
-            checkNumberOperands(op, left->eval(), right->eval());
-            return Value{std::get<double>(left->eval()) >=
-                         std::get<double>(right->eval())};
+            checkNumberOperands(op, leftV, rightV);
+            return Value{std::get<double>(leftV) >=
+                         std::get<double>(rightV)};
         } else if (op.type == TokenType::GREATER) {
-            checkNumberOperands(op, left->eval(), right->eval());
-            return Value{std::get<double>(left->eval()) >
-                         std::get<double>(right->eval())};
+            checkNumberOperands(op, leftV, rightV);
+            return Value{std::get<double>(leftV) >
+                         std::get<double>(rightV)};
         } else {
             return Value{};
         }
@@ -109,11 +111,12 @@ struct Unary : public Expression {
     };
 
     [[nodiscard]] Value eval() const override {
+        Value rightV = right->eval();
         if (op.type == TokenType::BANG) {
-            return Value{!std::get<bool>(right->eval())};
+            return Value{!std::get<bool>(rightV)};
         } else if (op.type == TokenType::MINUS) {
-            checkNumberOperand(op, right->eval());
-            return Value{-std::get<double>(right->eval())};
+            checkNumberOperand(op, rightV);
+            return Value{-std::get<double>(rightV)};
         } else {
             return Value{};
         }
