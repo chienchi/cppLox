@@ -25,8 +25,8 @@ TEST_CASE("Parser") {
 
     // REQUIRE(expr->eval() == Value(1.0));
 
-    Interpreter interpreter{std::move(expr)};
-    auto value = interpreter.eval();
+    Interpreter interpreter{};
+    auto value = interpreter.eval(*expr);
     REQUIRE(value == Value(1.0));
   }
   // 1+2
@@ -48,8 +48,8 @@ TEST_CASE("Parser") {
 
     // REQUIRE(expr->eval() == Value(3.0));
 
-    Interpreter interpreter{std::move(expr)};
-    auto value = interpreter.eval();
+    Interpreter interpreter{};
+    auto value = interpreter.eval(*expr);
     REQUIRE(value == Value(3.0));
   }
   // Homework: 1+2+3
@@ -64,8 +64,8 @@ TEST_CASE("Parser") {
     Parser parser{tokens};
     auto expr = parser.parse();
 
-    Interpreter interpreter{std::move(expr)};
-    auto value = interpreter.eval();
+    Interpreter interpreter{};
+    auto value = interpreter.eval(*expr);
     REQUIRE(value == Value(6.0));
   }
   // 1-2-3
@@ -78,8 +78,8 @@ TEST_CASE("Parser") {
     Parser parser{tokens};
     auto expr = parser.parse();
 
-    Interpreter interpreter{std::move(expr)};
-    auto value = interpreter.eval();
+    Interpreter interpreter{};
+    auto value = interpreter.eval(*expr);
     REQUIRE(value == Value(-4.0));
   }
   // 1+2*3
@@ -92,8 +92,8 @@ TEST_CASE("Parser") {
     Parser parser{tokens};
     auto expr = parser.parse();
 
-    Interpreter interpreter{std::move(expr)};
-    auto value = interpreter.eval();
+    Interpreter interpreter{};
+    auto value = interpreter.eval(*expr);
     REQUIRE(value == Value(7.0));
   }
   SECTION("Test Equality (double)") {
@@ -105,8 +105,8 @@ TEST_CASE("Parser") {
     Parser parser{tokens};
     auto expr = parser.parse();
 
-    Interpreter interpreter{std::move(expr)};
-    auto value = interpreter.eval();
+    Interpreter interpreter{};
+    auto value = interpreter.eval(*expr);
     REQUIRE(value == Value(true));
   }
   SECTION("Test Inequality (double)") {
@@ -118,8 +118,8 @@ TEST_CASE("Parser") {
     Parser parser{tokens};
     auto expr = parser.parse();
 
-    Interpreter interpreter{std::move(expr)};
-    auto value = interpreter.eval();
+    Interpreter interpreter{};
+    auto value = interpreter.eval(*expr);
     REQUIRE(value == Value(true));
   }
   SECTION("Test Equality (boolean)") {
@@ -131,8 +131,8 @@ TEST_CASE("Parser") {
     Parser parser{tokens};
     auto expr = parser.parse();
 
-    Interpreter interpreter{std::move(expr)};
-    auto value = interpreter.eval();
+    Interpreter interpreter{};
+    auto value = interpreter.eval(*expr);
     REQUIRE(value == Value(true));
   }
   SECTION("Test Inequality (boolean)") {
@@ -144,8 +144,8 @@ TEST_CASE("Parser") {
     Parser parser{tokens};
     auto expr = parser.parse();
 
-    Interpreter interpreter{std::move(expr)};
-    auto value = interpreter.eval();
+    Interpreter interpreter{};
+    auto value = interpreter.eval(*expr);
     REQUIRE(value == Value(false));
   }
   SECTION("Test Equality (string)") {
@@ -157,8 +157,8 @@ TEST_CASE("Parser") {
     Parser parser{tokens};
     auto expr = parser.parse();
 
-    Interpreter interpreter{std::move(expr)};
-    auto value = interpreter.eval();
+    Interpreter interpreter{};
+    auto value = interpreter.eval(*expr);
     REQUIRE(value == Value(false));
   }
   SECTION("Test Inequality (string)") {
@@ -170,8 +170,8 @@ TEST_CASE("Parser") {
     Parser parser{tokens};
     auto expr = parser.parse();
 
-    Interpreter interpreter{std::move(expr)};
-    auto value = interpreter.eval();
+    Interpreter interpreter{};
+    auto value = interpreter.eval(*expr);
     REQUIRE(value == Value(true));
   }
   SECTION("Test Inequality (different type)") {
@@ -183,8 +183,8 @@ TEST_CASE("Parser") {
     Parser parser{tokens};
     auto expr = parser.parse();
 
-    Interpreter interpreter{std::move(expr)};
-    auto value = interpreter.eval();
+    Interpreter interpreter{};
+    auto value = interpreter.eval(*expr);
     REQUIRE(value == Value(true));
   }
 
@@ -197,8 +197,8 @@ TEST_CASE("Parser") {
     Parser parser{tokens};
     auto expr = parser.parse();
 
-    Interpreter interpreter{std::move(expr)};
-    auto value = interpreter.eval();
+    Interpreter interpreter{};
+    auto value = interpreter.eval(*expr);
     REQUIRE(value == Value(true));
   }
   SECTION("Test comparison (less)") {
@@ -210,8 +210,8 @@ TEST_CASE("Parser") {
     Parser parser{tokens};
     auto expr = parser.parse();
 
-    Interpreter interpreter{std::move(expr)};
-    auto value = interpreter.eval();
+    Interpreter interpreter{};
+    auto value = interpreter.eval(*expr);
     REQUIRE(value == Value(false));
   }
   SECTION("Test comparison (less equal)") {
@@ -223,8 +223,8 @@ TEST_CASE("Parser") {
     Parser parser{tokens};
     auto expr = parser.parse();
 
-    Interpreter interpreter{std::move(expr)};
-    auto value = interpreter.eval();
+    Interpreter interpreter{};
+    auto value = interpreter.eval(*expr);
     REQUIRE(value == Value(false));
   }
 
@@ -237,8 +237,8 @@ TEST_CASE("Parser") {
     Parser parser{tokens};
     auto expr = parser.parse();
 
-    Interpreter interpreter{std::move(expr)};
-    auto value = interpreter.eval();
+    Interpreter interpreter{};
+    auto value = interpreter.eval(*expr);
     REQUIRE(value == Value(true));
   }
 
@@ -251,8 +251,8 @@ TEST_CASE("Parser") {
     Parser parser{tokens};
     auto expr = parser.parse();
 
-    Interpreter interpreter{std::move(expr)};
-    auto value = interpreter.eval();
+    Interpreter interpreter{};
+    auto value = interpreter.eval(*expr);
     REQUIRE(value == Value(-2.0));
   }
 
@@ -265,8 +265,8 @@ TEST_CASE("Parser") {
     Parser parser{tokens};
     auto expr = parser.parse();
 
-    Interpreter interpreter{std::move(expr)};
-    auto value = interpreter.eval();
+    Interpreter interpreter{};
+    auto value = interpreter.eval(*expr);
     REQUIRE(value == Value(-1.0));
   }
   SECTION("Parenthesis") {
@@ -278,8 +278,8 @@ TEST_CASE("Parser") {
     Parser parser{tokens};
     auto expr = parser.parse();
 
-    Interpreter interpreter{std::move(expr)};
-    auto value = interpreter.eval();
+    Interpreter interpreter{};
+    auto value = interpreter.eval(*expr);
     REQUIRE(value == Value(-2.0));
   }
   SECTION("Nested Parenthesis") {
@@ -291,8 +291,8 @@ TEST_CASE("Parser") {
     Parser parser{tokens};
     auto expr = parser.parse();
 
-    Interpreter interpreter{std::move(expr)};
-    auto value = interpreter.eval();
+    Interpreter interpreter{};
+    auto value = interpreter.eval(*expr);
     REQUIRE(value == Value(-2.0));
   }
 
@@ -325,8 +325,8 @@ TEST_CASE("Parser") {
         Parser parser{tokens};
         auto expr = parser.parse();
 
-        Interpreter interpreter{std::move(expr)};
+        Interpreter interpreter{};
         //auto value = interpreter.eval();
-        REQUIRE_THROWS_AS(interpreter.eval(),std::exception);
+        REQUIRE_THROWS_AS(interpreter.eval(*expr),std::exception);
   }
 }

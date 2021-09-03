@@ -21,7 +21,7 @@ struct RuntimeError : std::exception {
 struct Expression {
     // pure virtual function
 //    [[nodiscard]] virtual Value eval() const = 0;
-    virtual void accept(const ExprVisitor&) const= 0;
+    virtual void accept(ExprVisitor&) const= 0;
     //virtual void accept(const Interpretor&) = 0;
 
     virtual ~Expression() = default;
@@ -33,7 +33,7 @@ struct Literal : public Expression {
     ~Literal() override = default;
 
     //[[nodiscard]] Value eval() const override { return value; }
-    void accept(const ExprVisitor& visitor) const{
+    void accept(ExprVisitor& visitor) const{
         visitor.visit(*this);
     }
     Value value;
@@ -46,59 +46,7 @@ struct Binary : public Expression {
 
     ~Binary() override = default;
 
-    void checkNumberOperands(Token t, Value left, Value right) const {
-        if (std::holds_alternative<double>(left) && std::holds_alternative<double>(right)) return;
-        RuntimeError err(t, "Operand must be numbers.");
-        throw err;
-    };
-
-    [[nodiscard]] Value eval() const override {
-        // FIXME: we need to check if the operand types are correct.
-        //  checkNumberOperand().
-        // Homework: what happen if left and right are of different types?
-        Value rightV = right->eval();
-        Value leftV = left->eval();
-        if (op.type == TokenType::PLUS) {
-            checkNumberOperands(op, leftV, rightV);
-            return Value{std::get<double>(leftV) +
-                         std::get<double>(rightV)};
-        } else if (op.type == TokenType::MINUS) {
-            checkNumberOperands(op, leftV, rightV);
-            return Value{std::get<double>(leftV) -
-                         std::get<double>(rightV)};
-        } else if (op.type == TokenType::STAR) {
-            checkNumberOperands(op, leftV, rightV);
-            return Value{std::get<double>(leftV) *
-                         std::get<double>(rightV)};
-        } else if (op.type == TokenType::SLASH) {
-            checkNumberOperands(op, leftV, rightV);
-            return Value{std::get<double>(leftV) /
-                         std::get<double>(rightV)};
-        } else if (op.type == TokenType::EQUAL_EQUAL) {
-            return Value{leftV == rightV};
-        } else if (op.type == TokenType::BANG_EQUAL) {
-            return Value{leftV != rightV};
-        } else if (op.type == TokenType::LESS_EQUAL) {
-            checkNumberOperands(op, leftV, rightV);
-            return Value{std::get<double>(leftV) <=
-                         std::get<double>(rightV)};
-        } else if (op.type == TokenType::LESS) {
-            checkNumberOperands(op, leftV, rightV);
-            return Value{std::get<double>(leftV) <
-                         std::get<double>(rightV)};
-        } else if (op.type == TokenType::GREATER_EQUAL) {
-            checkNumberOperands(op, leftV, rightV);
-            return Value{std::get<double>(leftV) >=
-                         std::get<double>(rightV)};
-        } else if (op.type == TokenType::GREATER) {
-            checkNumberOperands(op, leftV, rightV);
-            return Value{std::get<double>(leftV) >
-                         std::get<double>(rightV)};
-        } else {
-            return Value{};
-        }
-    }
-    void accept(const ExprVisitor& visitor){
+    void accept(ExprVisitor& visitor) const{
         visitor.visit(*this);
     }
     std::unique_ptr<Expression> left;
@@ -112,7 +60,7 @@ struct Unary : public Expression {
 
     ~Unary() override = default;
 
-    void accept(const ExprVisitor& visitor){
+    void accept(ExprVisitor& visitor) const{
         visitor.visit(*this);
     }
     Token op;

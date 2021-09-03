@@ -4,6 +4,10 @@
 
 #ifndef CPPLOX_EXPRVISITOR_H
 #define CPPLOX_EXPRVISITOR_H
+struct Expression;
+struct Literal;
+struct Unary;
+struct Binary;
 
 struct ExprVisitor
 {
