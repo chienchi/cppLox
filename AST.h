@@ -21,7 +21,8 @@ struct RuntimeError : std::exception {
 struct Expression {
     // pure virtual function
 //    [[nodiscard]] virtual Value eval() const = 0;
-    virtual void accept(const ExprVisitor&) = 0;
+    virtual void accept(const ExprVisitor&) const= 0;
+    //virtual void accept(const Interpretor&) = 0;
 
     virtual ~Expression() = default;
 };
@@ -31,8 +32,10 @@ struct Literal : public Expression {
 
     ~Literal() override = default;
 
-    [[nodiscard]] Value eval() const override { return value; }
-
+    //[[nodiscard]] Value eval() const override { return value; }
+    void accept(const ExprVisitor& visitor) const{
+        visitor.visit(*this);
+    }
     Value value;
 };
 
@@ -95,7 +98,9 @@ struct Binary : public Expression {
             return Value{};
         }
     }
-
+    void accept(const ExprVisitor& visitor){
+        visitor.visit(*this);
+    }
     std::unique_ptr<Expression> left;
     Token op;
     std::unique_ptr<Expression> right;
@@ -107,23 +112,9 @@ struct Unary : public Expression {
 
     ~Unary() override = default;
 
-    void checkNumberOperand(Token t, Value operand) const {
-        if (std::holds_alternative<double>(operand)) return;
-        throw RuntimeError(t, "Operand must be a number.");
-    };
-
-    [[nodiscard]] Value eval() const override {
-        Value rightV = right->eval();
-        if (op.type == TokenType::BANG) {
-            return Value{!std::get<bool>(rightV)};
-        } else if (op.type == TokenType::MINUS) {
-            checkNumberOperand(op, rightV);
-            return Value{-std::get<double>(rightV)};
-        } else {
-            return Value{};
-        }
+    void accept(const ExprVisitor& visitor){
+        visitor.visit(*this);
     }
-
     Token op;
     std::unique_ptr<Expression> right;
 };

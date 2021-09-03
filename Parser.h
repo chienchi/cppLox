@@ -172,18 +172,39 @@ private:
 // Chapter 7
 class Interpreter : public ExprVisitor {
 public:
-  explicit Interpreter(std::unique_ptr<Expression> &&expr)
-      : expr(std::move(expr)) {}
+  //explicit Interpreter(std::unique_ptr<Expression> &&expr)
+  //    : expr(std::move(expr)) {}
 
-  Value eval() {
-    // return expr->eval();
-    // TBD
+  Value eval(const Expression& expr) {
+      visit(expr);
+      return result;
   }
-
+  void visit(const Expression& expr){
+      expr.accept(*this);
+  }
+  void visit(const Literal& exp){
+      result= exp.value;
+  }
+  void visit(const Unary& exp){
+      exp.right->accept(*this);//this.result will be changed.
+      if (exp.op.type == TokenType::BANG) {
+          result=Value{!std::get<bool>(result)};
+      } else if (exp.op.type == TokenType::MINUS) {
+          checkNumberOperand(exp.op, result);
+          result=Value{-std::get<double>(result)};
+      } else {
+          result=Value{}; //TODO: throw exception
+      }
+  }
+  void checkNumberOperand(Token t, Value operand) const {
+      if (std::holds_alternative<double>(operand)) return;
+      throw RuntimeError(t, "Operand must be a number.");
+  };
   // implement all of the visit() virtual functions.
 
 private:
-  std::unique_ptr<Expression> expr;
+    Value result;
+  //std::unique_ptr<Expression> expr;
 };
 
 #endif // CPPLOX_PARSER_H
