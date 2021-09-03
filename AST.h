@@ -1,9 +1,10 @@
 #ifndef CPPLOX_AST_H
 #define CPPLOX_AST_H
 
-#include <memory>
+#include "ExprVisitor.h"
 #include "Token.h"
 #include "value.h"
+#include <memory>
 
 // Chapter 5 Abstract Syntax Tree
 struct RuntimeError : std::exception {
@@ -19,7 +20,8 @@ struct RuntimeError : std::exception {
 
 struct Expression {
     // pure virtual function
-    [[nodiscard]] virtual Value eval() const = 0;
+//    [[nodiscard]] virtual Value eval() const = 0;
+    virtual void accept(const ExprVisitor&) = 0;
 
     virtual ~Expression() = default;
 };

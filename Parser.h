@@ -2,6 +2,7 @@
 #define CPPLOX_PARSER_H
 
 #include "AST.h"
+#include "ExprVisitor.h"
 #include "Token.h"
 
 #include <memory>
@@ -34,9 +35,9 @@ public:
           std::move(left), op, std::move(right)); // return type  ==> Binary
     }
   }
- struct parser_error : std::exception{
-     parser_error(std::string string);
-     std::string message;
+  struct parser_error : std::exception {
+    parser_error(std::string string);
+    std::string message;
   };
   std::unique_ptr<Expression> primary() {
     if (match(TokenType::LEFT_PAREN)) {
@@ -44,8 +45,8 @@ public:
       if (match(TokenType::RIGHT_PAREN)) {
         return expr;
       } // else?? FIXME: throw Parse Error, consume()?
-      else{
-          throw parser_error{"Unbalanced parenthesis!"};
+      else {
+        throw parser_error{"Unbalanced parenthesis!"};
       }
     }
     return literal();
@@ -169,12 +170,17 @@ private:
 };
 
 // Chapter 7
-class Interpreter {
+class Interpreter : public ExprVisitor {
 public:
   explicit Interpreter(std::unique_ptr<Expression> &&expr)
       : expr(std::move(expr)) {}
 
-  Value eval() { return expr->eval(); }
+  Value eval() {
+    // return expr->eval();
+    // TBD
+  }
+
+  // implement all of the visit() virtual functions.
 
 private:
   std::unique_ptr<Expression> expr;
