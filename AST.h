@@ -39,8 +39,6 @@ struct Binary : public Expression {
          std::unique_ptr<Expression> &&right)
       : left(std::move(left)), op(std::move(op)), right(std::move(right)) {}
 
-  ~Binary() override = default;
-
   void accept(ExprVisitor &visitor) const { visitor.visit(*this); }
 
   std::unique_ptr<Expression> left;
@@ -52,30 +50,40 @@ struct Unary : public Expression {
   Unary(Token op, std::unique_ptr<Expression> &&right)
       : op(std::move(op)), right(std::move(right)) {}
 
-  ~Unary() override = default;
-
   void accept(ExprVisitor &visitor) const { visitor.visit(*this); }
 
   Token op;
   std::unique_ptr<Expression> right;
 };
 
+struct Stmt;
+struct ExprStmt;
+struct PrintStmt;
+
+struct StmtVisitor {
+  virtual void visit(const Stmt &) = 0;
+  virtual void visit(const ExprStmt &) = 0;
+  virtual void visit(const PrintStmt &) = 0;
+};
+
 struct Stmt {
-  // TBD
+  virtual void accept(StmtVisitor &) const = 0;
+
+  virtual ~Stmt() = default;
 };
 
 struct ExprStmt : public Stmt {
-  // TBD
-  ExprStmt(std::unique_ptr<Expression> &&value)
-  :  value(std::move(value)){}
+  ExprStmt(std::unique_ptr<Expression> &&value) : value(std::move(value)) {}
+
+  void accept(StmtVisitor &visitor) const override { visitor.visit(*this); }
 
   std::unique_ptr<Expression> value;
 };
 
 struct PrintStmt : public Stmt {
-  // TBD
-  PrintStmt(std::unique_ptr<Expression> &&value)
-  :  value(std::move(value)){}
+  PrintStmt(std::unique_ptr<Expression> &&value) : value(std::move(value)) {}
+
+  void accept(StmtVisitor &visitor) const override { visitor.visit(*this); }
 
   std::unique_ptr<Expression> value;
 };

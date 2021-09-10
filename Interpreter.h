@@ -9,8 +9,9 @@
 #include "ExprVisitor.h"
 
 // Chapter 7
-class Interpreter : public ExprVisitor {
+class Interpreter : public ExprVisitor, public StmtVisitor {
 public:
+  // TODO: not needed any more ???
   Value eval(const Expression &expr) {
     visit(expr);
     return result;
@@ -68,6 +69,26 @@ public:
     } else {
       result = Value{};
     }
+  }
+
+  void visit(const Stmt&) {
+    // TBD
+  }
+
+  void visit(const ExprStmt&) {
+    // TBD
+  }
+
+  void visit(const PrintStmt) {
+    // TBD
+  }
+
+  void interpret(std::vector<std::unique_ptr<Stmt>>& statements) {
+    // TBD, for each statement in statements call execute(statement);
+  }
+
+  void execute(std::unique_ptr<Stmt> statement) {
+      // TBD, visit the statement.
   }
 
 private:
