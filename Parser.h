@@ -116,7 +116,17 @@ public:
 
   std::unique_ptr<Stmt> statement()
   {
-    return std::unique_ptr<Stmt> {/* TBD */};
+    if (match(TokenType::PRINT)) return printStatement();
+    return expressionStatement();
+  }
+
+  std::unique_ptr<Stmt> printStatement()
+  {
+      return std::unique_ptr<Stmt> {};
+  }
+  std::unique_ptr<Stmt> expressionStatement()
+  {
+      return std::unique_ptr<Stmt> {};
   }
 
   std::vector<std::unique_ptr<Stmt>> parse() {
