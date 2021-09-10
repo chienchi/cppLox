@@ -2,7 +2,7 @@
 // Created by osboxes on 10/23/20.
 //
 
-#include "scanner.h"
+#include "Scanner.h"
 #include <cstring>
 #include <fstream>
 #include <iostream>
@@ -56,6 +56,7 @@ void runPrompt() {
     hasError = false;
   }
 }
+
 int main(int argc, char *argv[]) {
   if (argc > 2) {
     std::cerr << "Usage: CppLox [script]\n";

@@ -3,7 +3,7 @@
 
 #include "ExprVisitor.h"
 #include "Token.h"
-#include "value.h"
+#include "Value.h"
 #include <memory>
 
 // Chapter 5 Abstract Syntax Tree

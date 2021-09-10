@@ -5,7 +5,7 @@
 #ifndef CPPLOX_TOKEN_H
 #define CPPLOX_TOKEN_H
 
-#include "value.h"
+#include "Value.h"
 #include <string>
 
 enum class TokenType {

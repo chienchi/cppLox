@@ -2,7 +2,7 @@
 
 #include "Parser.h"
 #include "Interpreter.h"
-#include "scanner.h"
+#include "Scanner.h"
 #include <iostream>
 #if defined __has_include
 #if __has_include(<catch2/catch.hpp>)

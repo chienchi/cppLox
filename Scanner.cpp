@@ -4,7 +4,7 @@
 
 // "var language= 'lox';" =>
 // Token(VAR), Token(ID), Token(EQUAL), Token(STRING), Token(SEMICOLON)
-#include "scanner.h"
+#include "Scanner.h"
 #include <string>
 #include <unordered_map>
 
