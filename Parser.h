@@ -122,11 +122,15 @@ public:
 
   std::unique_ptr<Stmt> printStatement()
   {
-      return std::unique_ptr<Stmt> {};
+      auto value = expression();
+      consume(TokenType::SEMICOLON,"Expect ';' after value.");
+      return std::make_unique<PrintStmt>(std::move(value));
   }
   std::unique_ptr<Stmt> expressionStatement()
   {
-      return std::unique_ptr<Stmt> {};
+      auto value = expression();
+      consume(TokenType::SEMICOLON,"Expect ';' after expression.");
+      return std::make_unique<ExprStmt>(std::move(value));
   }
 
   std::vector<std::unique_ptr<Stmt>> parse() {
@@ -186,6 +190,7 @@ private:
   Token peek();
   Token advance();
   Token previous();
+  Token consume(TokenType type, std::string message);
   bool isAtEnd();
 
 private:

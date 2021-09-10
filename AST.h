@@ -64,12 +64,20 @@ struct Stmt {
   // TBD
 };
 
-struct ExprStmt {
+struct ExprStmt : public Stmt {
   // TBD
+  ExprStmt(std::unique_ptr<Expression> &&value)
+  :  value(std::move(value)){}
+
+  std::unique_ptr<Expression> value;
 };
 
-struct PrintStmt {
+struct PrintStmt : public Stmt {
   // TBD
+  PrintStmt(std::unique_ptr<Expression> &&value)
+  :  value(std::move(value)){}
+
+  std::unique_ptr<Expression> value;
 };
 
 #endif // CPPLOX_AST_H
