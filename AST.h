@@ -60,4 +60,16 @@ struct Unary : public Expression {
   std::unique_ptr<Expression> right;
 };
 
+struct Stmt {
+  // TBD
+};
+
+struct ExprStmt {
+  // TBD
+};
+
+struct PrintStmt {
+  // TBD
+};
+
 #endif // CPPLOX_AST_H
