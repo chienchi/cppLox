@@ -114,7 +114,12 @@ public:
     return equality();
   };
 
-  std::unique_ptr<Expression> parse() {
+  std::unique_ptr<Stmt> statement()
+  {
+    return std::unique_ptr<Stmt> {/* TBD */};
+  }
+
+  std::vector<std::unique_ptr<Stmt>> parse() {
     // Grammars:
     //   expression := term
     //   term := mul_binary ('+-' factor)*
@@ -138,7 +143,12 @@ public:
      * primary        → NUMBER | STRING | "true" | "false" | "nil"
      *                  | "(" expression ")" ;
      */
-    return expression();
+    std::vector<std::unique_ptr<Stmt>> statements;
+    while (!isAtEnd()) {
+      statements.push_back(statement());
+    }
+
+    return statements;
   }
 
   // is insufficient to see the left or right
@@ -172,6 +182,5 @@ private:
   std::vector<Token> tokens;
   std::size_t current = 0;
 };
-
 
 #endif // CPPLOX_PARSER_H
