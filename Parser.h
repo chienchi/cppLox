@@ -2,7 +2,6 @@
 #define CPPLOX_PARSER_H
 
 #include "AST.h"
-#include "ExprVisitor.h"
 #include "Token.h"
 
 #include <memory>
@@ -35,10 +34,12 @@ public:
           std::move(left), op, std::move(right)); // return type  ==> Binary
     }
   }
+
   struct parser_error : std::exception {
     parser_error(std::string string);
     std::string message;
   };
+
   std::unique_ptr<Expression> primary() {
     if (match(TokenType::LEFT_PAREN)) {
       auto expr = expression();
@@ -54,7 +55,6 @@ public:
 
   std::unique_ptr<Expression> unary() {
     //   unary  :=  ( "!" | "-" ) unary | primary ;
-
     if (match(TokenType::BANG, TokenType::MINUS)) { // don't need while loop
       auto op = previous();
       auto right = unary(); // this is recursive itself
@@ -67,7 +67,6 @@ public:
   std::unique_ptr<Expression> factor() {
     //   factor := unary ('*/' unary)*
     auto left = unary();
-
     while (match(TokenType::STAR, TokenType::SLASH)) {
       auto op = previous();
       auto right = unary();
@@ -79,7 +78,6 @@ public:
   std::unique_ptr<Expression> term() {
     //   term := factor ('+-' factor)*
     auto left = factor();
-
     while (match(TokenType::PLUS, TokenType::MINUS)) {
       auto op = previous();
       auto right = factor();
@@ -103,7 +101,6 @@ public:
   std::unique_ptr<Expression> equality() {
     // equality       → comparison ( ( "!=" | "==" ) comparison )* ;
     auto left = comparison();
-
     while (match(TokenType::EQUAL_EQUAL, TokenType::BANG_EQUAL)) {
       auto op = previous();
       auto right = comparison();
@@ -169,92 +166,5 @@ private:
   std::size_t current = 0;
 };
 
-// Chapter 7
-class Interpreter : public ExprVisitor {
-public:
-  //explicit Interpreter(std::unique_ptr<Expression> &&expr)
-  //    : expr(std::move(expr)) {}
-
-  Value eval(const Expression& expr) {
-      visit(expr);
-      return result;
-  }
-  void visit(const Expression& expr){
-      expr.accept(*this);
-  }
-  void visit(const Literal& exp){
-      result= exp.value;
-  }
-  void visit(const Unary& exp){
-      exp.right->accept(*this);//this.result will be changed.
-      if (exp.op.type == TokenType::BANG) {
-          result=Value{!std::get<bool>(result)};
-      } else if (exp.op.type == TokenType::MINUS) {
-          checkNumberOperand(exp.op, result);
-          result=Value{-std::get<double>(result)};
-      } else {
-          result=Value{}; //TODO: throw exception
-      }
-  }
-  void visit(const Binary& exp){
-      exp.left->accept(*this);
-      Value leftV = result;
-      exp.right->accept(*this);
-      Value rightV = result;
-      if (exp.op.type == TokenType::PLUS) {
-          checkNumberOperands(exp.op, leftV, rightV);
-          result = Value{std::get<double>(leftV) +
-          std::get<double>(rightV)};
-      } else if (exp.op.type == TokenType::MINUS) {
-          checkNumberOperands(exp.op, leftV, rightV);
-          result = Value{std::get<double>(leftV) -
-          std::get<double>(rightV)};
-      } else if (exp.op.type == TokenType::STAR) {
-          checkNumberOperands(exp.op, leftV, rightV);
-          result = Value{std::get<double>(leftV) *
-          std::get<double>(rightV)};
-      } else if (exp.op.type == TokenType::SLASH) {
-          checkNumberOperands(exp.op, leftV, rightV);
-          result = Value{std::get<double>(leftV) /
-          std::get<double>(rightV)};
-      } else if (exp.op.type == TokenType::EQUAL_EQUAL) {
-          result = Value{leftV == rightV};
-      } else if (exp.op.type == TokenType::BANG_EQUAL) {
-          result = Value{leftV != rightV};
-      } else if (exp.op.type == TokenType::LESS_EQUAL) {
-          checkNumberOperands(exp.op, leftV, rightV);
-          result = Value{std::get<double>(leftV) <=
-          std::get<double>(rightV)};
-      } else if (exp.op.type == TokenType::LESS) {
-          checkNumberOperands(exp.op, leftV, rightV);
-          result = Value{std::get<double>(leftV) <
-          std::get<double>(rightV)};
-      } else if (exp.op.type == TokenType::GREATER_EQUAL) {
-          checkNumberOperands(exp.op, leftV, rightV);
-          result = Value{std::get<double>(leftV) >=
-          std::get<double>(rightV)};
-      } else if (exp.op.type == TokenType::GREATER) {
-          checkNumberOperands(exp.op, leftV, rightV);
-          result = Value{std::get<double>(leftV) >
-          std::get<double>(rightV)};
-      } else {
-          result = Value{};
-      }
-  }
-  void checkNumberOperands(Token t, Value left, Value right) const {
-      if (std::holds_alternative<double>(left) && std::holds_alternative<double>(right)) return;
-      RuntimeError err(t, "Operand must be numbers.");
-      throw err;
-  };
-  void checkNumberOperand(Token t, Value operand) const {
-      if (std::holds_alternative<double>(operand)) return;
-      throw RuntimeError(t, "Operand must be a number.");
-  };
-  // implement all of the visit() virtual functions.
-
-private:
-    Value result;
-  //std::unique_ptr<Expression> expr;
-};
 
 #endif // CPPLOX_PARSER_H
