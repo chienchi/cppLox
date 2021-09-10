@@ -5,6 +5,7 @@
 #ifndef CPPLOX_INTERPRETER_H
 #define CPPLOX_INTERPRETER_H
 
+#include <iostream>
 #include "AST.h"
 #include "ExprVisitor.h"
 
@@ -71,16 +72,20 @@ public:
     }
   }
 
-  void visit(const Stmt&) {
+  void visit(const Stmt& statement) {
     // TBD
+    statement.accept(*this);
   }
 
-  void visit(const ExprStmt&) {
+  void visit(const ExprStmt& statement) {
     // TBD
+    statement.value->accept(*this);
   }
 
-  void visit(const PrintStmt) {
+  void visit(const PrintStmt& statement) {
     // TBD
+    statement.value->accept(*this);
+    std::cout<<result<<std::endl;
   }
 
   void interpret(std::vector<std::unique_ptr<Stmt>>& statements) {
