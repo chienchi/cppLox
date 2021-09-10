@@ -90,12 +90,23 @@ public:
 
   void interpret(std::vector<std::unique_ptr<Stmt>>& statements) {
     // TBD, for each statement in statements call execute(statement);
+    try{
+        for (auto& statement : statements){
+            execute(statement);
+        }
+    }catch(RuntimeError err){
+        std::cout << "Error: xxx" << std::endl;
+    }
   }
 
-  void execute(std::unique_ptr<Stmt> statement) {
+  void execute(std::unique_ptr<Stmt> &statement) {
       // TBD, visit the statement.
+      statement->accept(*this);
   }
 
+  Value get_result(){
+      return result;
+  }
 private:
   void checkNumberOperand(Token t, Value operand) const {
     if (std::holds_alternative<double>(operand))
