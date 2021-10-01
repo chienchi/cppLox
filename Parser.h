@@ -114,23 +114,21 @@ public:
     return equality();
   };
 
-  std::unique_ptr<Stmt> statement()
-  {
-    if (match(TokenType::PRINT)) return printStatement();
+  std::unique_ptr<Stmt> statement() {
+    if (match(TokenType::PRINT))
+      return printStatement();
     return expressionStatement();
   }
 
-  std::unique_ptr<Stmt> printStatement()
-  {
-      auto value = expression();
-      consume(TokenType::SEMICOLON,"Expect ';' after value.");
-      return std::make_unique<PrintStmt>(std::move(value));
+  std::unique_ptr<Stmt> printStatement() {
+    auto value = expression();
+    consume(TokenType::SEMICOLON, "Expect ';' after value.");
+    return std::make_unique<PrintStmt>(std::move(value));
   }
-  std::unique_ptr<Stmt> expressionStatement()
-  {
-      auto value = expression();
-      consume(TokenType::SEMICOLON,"Expect ';' after expression.");
-      return std::make_unique<ExprStmt>(std::move(value));
+  std::unique_ptr<Stmt> expressionStatement() {
+    auto value = expression();
+    consume(TokenType::SEMICOLON, "Expect ';' after expression.");
+    return std::make_unique<ExprStmt>(std::move(value));
   }
 
   std::vector<std::unique_ptr<Stmt>> parse() {
@@ -179,13 +177,21 @@ public:
 private:
   // template in .h
   template <typename... Ts> bool match(Ts... types) {
-    return (... || check(types));
     // map, apply/mapping a function to elements in a "container"
     // ex. 1. map check() types => check(types[0]), check(types[1]) ...
     // check(types[n]) reduce, apply a binary operator to elements in a
     // "container" and return a single value. ex. reduce || to ex. 1 =>
     // check(types[0]) || check(types[1]) ... ||  check(types[n]) => true/false
+    auto visit = [this](auto arg) {
+      if (check(arg)) {
+        advance();
+        return true;
+      }
+      return false;
+    };
+    return (... || visit(types));
   }
+
   bool check(TokenType type);
   Token peek();
   Token advance();
