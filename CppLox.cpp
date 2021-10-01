@@ -3,6 +3,8 @@
 //
 
 #include "Scanner.h"
+#include "Parser.h"
+#include "Interpreter.h"
 #include <cstring>
 #include <fstream>
 #include <iostream>
@@ -15,9 +17,12 @@ void run(const std::string &source) {
 
   Scanner scanner(source);
   auto tokens = scanner.scanTokens();
-  for (const auto &token : tokens) {
-    std::cout << token << std::endl;
-  }
+  Parser parser{tokens};
+  auto expr = parser.parse();
+
+  Interpreter interpreter{};
+  interpreter.interpret(expr);
+
 }
 void runFile(char *path) {
 
