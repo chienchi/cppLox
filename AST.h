@@ -23,6 +23,15 @@ struct Expression {
 
   virtual ~Expression() = default;
 };
+struct Var : public Expression {
+    explicit Var(Token name) : name(std::move(name)) {}
+
+    ~Var() override = default;
+
+    void accept(ExprVisitor &visitor) const { visitor.visit(*this); }
+
+    Token name;
+};
 
 struct Literal : public Expression {
   explicit Literal(Value value) : value(std::move(value)) {}

@@ -40,18 +40,23 @@ public:
     std::string message;
   };
 
-  std::unique_ptr<Expression> primary() {
-    if (match(TokenType::LEFT_PAREN)) {
-      auto expr = expression();
-      if (match(TokenType::RIGHT_PAREN)) {
-        return expr;
-      } // else?? FIXME: throw Parse Error, consume()?
-      else {
-        throw parser_error{"Unbalanced parenthesis!"};
-      }
+    std::unique_ptr<Expression> primary() {
+        // primary        → NUMBER | STRING | "true" | "false" | "nil"
+        //*                  | "(" expression ")" | IDENTIFIER ;
+        if (match(TokenType::IDENTIFIER)) {
+            return std::make_unique<Var>(previous());
+        }
+        if (match(TokenType::LEFT_PAREN)) {
+            auto expr = expression();
+            if (match(TokenType::RIGHT_PAREN)) {
+                return expr;
+            } // else?? FIXME: throw Parse Error, consume()?
+            else {
+                throw parser_error{"Unbalanced parenthesis!"};
+            }
+        }
+        return literal();
     }
-    return literal();
-  }
 
   std::unique_ptr<Expression> unary() {
     //   unary  :=  ( "!" | "-" ) unary | primary ;
@@ -178,7 +183,7 @@ public:
      * unary          → ( "!" | "-" ) unary
      *                  | primary ;
      * primary        → NUMBER | STRING | "true" | "false" | "nil"
-     *                  | "(" expression ")" ;
+     *                  | "(" expression ")" | IDENTIFIER ;
      */
     std::vector<std::unique_ptr<Stmt>> statements;
     while (!isAtEnd()) {
