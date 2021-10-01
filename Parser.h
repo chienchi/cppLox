@@ -131,6 +131,28 @@ public:
     return std::make_unique<ExprStmt>(std::move(value));
   }
 
+  std::unique_ptr<Stmt> varDecl() {
+      if (match(TokenType::IDENTIFIER)) {
+        auto name = previous();
+        if (match(TokenType::EQUAL)) {
+          auto expr = expression();
+          consume(TokenType::SEMICOLON, "");
+          // return VarDecl(name, expr);
+        }
+        consume(TokenType::SEMICOLON, "");
+        // return VarDecl(name);
+      }
+
+  }
+
+  std::unique_ptr<Stmt> declaration() {
+    if (match(TokenType::VAR)) {
+      return varDecl();
+    } else {
+      return statement();
+    }
+  }
+
   std::vector<std::unique_ptr<Stmt>> parse() {
     // Grammars:
     //   expression := term
@@ -139,7 +161,10 @@ public:
     //   literal  := Number
     /*
      * NEW:
-     * program        -> statement* EOF;
+     * program        -> declaration* EOF;
+     * declaration    -> varDecl
+     *                  | statement
+     * varDecl        -> "var" IDENTIFIER ( "=" expression)? ";"
      * statement      -> exprStmt
      *                  | printStmt;
      * exprStmt       -> expression ";"
@@ -157,7 +182,7 @@ public:
      */
     std::vector<std::unique_ptr<Stmt>> statements;
     while (!isAtEnd()) {
-      statements.push_back(statement());
+      statements.push_back(declaration());
     }
 
     return statements;
