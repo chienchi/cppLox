@@ -136,11 +136,11 @@ public:
         auto name = previous();
         if (match(TokenType::EQUAL)) {
           auto expr = expression();
-          consume(TokenType::SEMICOLON, "");
-          // return VarDecl(name, expr);
+          consume(TokenType::SEMICOLON, "Semicolon missing!");
+          return std::make_unique<VarDecl>(name, std::move(expr));
         }
-        consume(TokenType::SEMICOLON, "");
-        // return VarDecl(name);
+        consume(TokenType::SEMICOLON, "Semicolon missing!");
+        return std::make_unique<VarDecl>(name);
       }
 
   }

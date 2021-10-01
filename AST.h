@@ -88,4 +88,14 @@ struct PrintStmt : public Stmt {
   std::unique_ptr<Expression> value;
 };
 
+struct VarDecl : public Stmt {
+    VarDecl(Token name, std::unique_ptr<Expression> &&init):name(name), init(std::move(init)) {}
+    VarDecl(Token name) :name(name){}
+
+    void accept(StmtVisitor &visitor) const override { visitor.visit(*this); }
+
+    Token name;
+    std::unique_ptr<Expression> init;
+};
+
 #endif // CPPLOX_AST_H
