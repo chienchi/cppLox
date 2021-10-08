@@ -72,24 +72,28 @@ public:
     }
   }
 
-  void visit(const Stmt& statement) {
+  void visit(const Var &expr) {
     // TBD
+  }
+
+  void visit(const Stmt& statement) {
     statement.accept(*this);
   }
 
   void visit(const ExprStmt& statement) {
-    // TBD
     statement.value->accept(*this);
   }
 
   void visit(const PrintStmt& statement) {
-    // TBD
     statement.value->accept(*this);
     std::cout<<result<<std::endl;
   }
 
+  void visit(const VarDecl& statment) {
+    //TBD
+  }
+
   void interpret(std::vector<std::unique_ptr<Stmt>>& statements) {
-    // TBD, for each statement in statements call execute(statement);
     try{
         for (auto& statement : statements){
             execute(statement);
@@ -100,7 +104,6 @@ public:
   }
 
   void execute(std::unique_ptr<Stmt> &statement) {
-      // TBD, visit the statement.
       statement->accept(*this);
   }
 
@@ -123,6 +126,8 @@ private:
   };
 
   Value result;
+
+  // TODO: Add an instance of Environment
 };
 
 #endif // CPPLOX_INTERPRETER_H

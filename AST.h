@@ -2,27 +2,19 @@
 #define CPPLOX_AST_H
 
 #include "ExprVisitor.h"
+#include "StmtVisitor.h"
 #include "Token.h"
 #include "Value.h"
 #include <memory>
 
 // Chapter 5 Abstract Syntax Tree
-struct RuntimeError : std::exception {
-  RuntimeError(Token op, std::string message)
-      : token(std::move(op)), message(std::move(message)) {}
-
-  std::string get_msg() { return message; }
-
-  std::string message;
-  Token token;
-};
-
 struct Expression {
   // pure virtual function
   virtual void accept(ExprVisitor &) const = 0;
 
   virtual ~Expression() = default;
 };
+
 struct Var : public Expression {
   explicit Var(Token name) : name(std::move(name)) {}
 
@@ -63,16 +55,6 @@ struct Unary : public Expression {
 
   Token op;
   std::unique_ptr<Expression> right;
-};
-
-struct Stmt;
-struct ExprStmt;
-struct PrintStmt;
-
-struct StmtVisitor {
-  virtual void visit(const Stmt &) = 0;
-  virtual void visit(const ExprStmt &) = 0;
-  virtual void visit(const PrintStmt &) = 0;
 };
 
 struct Stmt {

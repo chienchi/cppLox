@@ -18,4 +18,14 @@ static void errorLog(std::size_t line, const std::string &where,
     report(line,"",msg)
 }*/
 
+struct RuntimeError : std::exception {
+  RuntimeError(Token op, std::string message)
+      : token(std::move(op)), message(std::move(message)) {}
+
+  std::string get_msg() { return message; }
+
+  std::string message;
+  Token token;
+};
+
 #endif // CPPLOX_ERROR_H
