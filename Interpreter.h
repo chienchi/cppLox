@@ -8,6 +8,8 @@
 #include <iostream>
 #include "AST.h"
 #include "ExprVisitor.h"
+#include "Environment.h"
+#include "error.h"
 
 // Chapter 7
 class Interpreter : public ExprVisitor, public StmtVisitor {
@@ -89,8 +91,13 @@ public:
     std::cout<<result<<std::endl;
   }
 
-  void visit(const VarDecl& statment) {
+  void visit(const VarDecl& statement) {
     //TBD
+    Value value;
+    if (statement.init){
+        value=eval(*statement.init);
+    }
+    environment.define(statement.name.lexeme, value);
   }
 
   void interpret(std::vector<std::unique_ptr<Stmt>>& statements) {
@@ -128,6 +135,7 @@ private:
   Value result;
 
   // TODO: Add an instance of Environment
+  Environment environment;
 };
 
 #endif // CPPLOX_INTERPRETER_H
