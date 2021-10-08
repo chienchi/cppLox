@@ -76,6 +76,7 @@ public:
 
   void visit(const Var &expr) {
     // TBD
+    result = environment.get(expr.name);
   }
 
   void visit(const Stmt& statement) {
@@ -100,13 +101,14 @@ public:
     environment.define(statement.name.lexeme, value);
   }
 
+
   void interpret(std::vector<std::unique_ptr<Stmt>>& statements) {
     try{
         for (auto& statement : statements){
             execute(statement);
         }
     }catch(RuntimeError err){
-        std::cout << "Error: xxx" << std::endl;
+        std::cout << "Error: " + err.get_msg() << std::endl;
     }
   }
 

@@ -14,14 +14,14 @@ class Environment {
 public:
   void define(const std::string &name, Value value) { values[name] = value; }
 
-  Value get(Token name) const {
+  Value get(Token name)  {
     auto iter = values.find(name.lexeme);
     if (iter != values.end()) {
       return values[name.lexeme];
     }
 
-    throw RuntimeError::RuntimeError(name,
-                                     "Undefined variable: " + name.lexeme + ".")
+    throw RuntimeError(name,
+                        "Undefined variable: " + name.lexeme + ".");
   }
 
 private:

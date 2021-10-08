@@ -22,7 +22,10 @@ struct RuntimeError : std::exception {
   RuntimeError(Token op, std::string message)
       : token(std::move(op)), message(std::move(message)) {}
 
-  std::string get_msg() { return message; }
+  std::string get_msg() {
+      return message + " at line " + std::to_string(token.line) ;
+  }
+
 
   std::string message;
   Token token;
