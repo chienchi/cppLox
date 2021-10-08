@@ -40,23 +40,23 @@ public:
     std::string message;
   };
 
-    std::unique_ptr<Expression> primary() {
-        // primary        → NUMBER | STRING | "true" | "false" | "nil"
-        //*                  | "(" expression ")" | IDENTIFIER ;
-        if (match(TokenType::IDENTIFIER)) {
-            return std::make_unique<Var>(previous());
-        }
-        if (match(TokenType::LEFT_PAREN)) {
-            auto expr = expression();
-            if (match(TokenType::RIGHT_PAREN)) {
-                return expr;
-            } // else?? FIXME: throw Parse Error, consume()?
-            else {
-                throw parser_error{"Unbalanced parenthesis!"};
-            }
-        }
-        return literal();
+  std::unique_ptr<Expression> primary() {
+    // primary        → NUMBER | STRING | "true" | "false" | "nil"
+    //*                  | "(" expression ")" | IDENTIFIER ;
+    if (match(TokenType::IDENTIFIER)) {
+      return std::make_unique<Var>(previous());
     }
+    if (match(TokenType::LEFT_PAREN)) {
+      auto expr = expression();
+      if (match(TokenType::RIGHT_PAREN)) {
+        return expr;
+      } // else?? FIXME: throw Parse Error, consume()?
+      else {
+        throw parser_error{"Unbalanced parenthesis!"};
+      }
+    }
+    return literal();
+  }
 
   std::unique_ptr<Expression> unary() {
     //   unary  :=  ( "!" | "-" ) unary | primary ;
@@ -137,17 +137,14 @@ public:
   }
 
   std::unique_ptr<Stmt> varDecl() {
-      if (match(TokenType::IDENTIFIER)) {
-        auto name = previous();
-        if (match(TokenType::EQUAL)) {
-          auto expr = expression();
-          consume(TokenType::SEMICOLON, "Semicolon missing!");
-          return std::make_unique<VarDecl>(name, std::move(expr));
-        }
-        consume(TokenType::SEMICOLON, "Semicolon missing!");
-        return std::make_unique<VarDecl>(name);
-      }
-
+    auto name = consume(TokenType::IDENTIFIER, "variable name expected");
+    if (match(TokenType::EQUAL)) {
+      auto expr = expression();
+      consume(TokenType::SEMICOLON, "Semicolon missing!");
+      return std::make_unique<VarDecl>(name, std::move(expr));
+    }
+    consume(TokenType::SEMICOLON, "Semicolon missing!");
+    return std::make_unique<VarDecl>(name);
   }
 
   std::unique_ptr<Stmt> declaration() {

@@ -24,13 +24,13 @@ struct Expression {
   virtual ~Expression() = default;
 };
 struct Var : public Expression {
-    explicit Var(Token name) : name(std::move(name)) {}
+  explicit Var(Token name) : name(std::move(name)) {}
 
-    ~Var() override = default;
+  ~Var() override = default;
 
-    void accept(ExprVisitor &visitor) const { visitor.visit(*this); }
+  void accept(ExprVisitor &visitor) const { visitor.visit(*this); }
 
-    Token name;
+  Token name;
 };
 
 struct Literal : public Expression {
@@ -98,13 +98,14 @@ struct PrintStmt : public Stmt {
 };
 
 struct VarDecl : public Stmt {
-    VarDecl(Token name, std::unique_ptr<Expression> &&init):name(name), init(std::move(init)) {}
-    VarDecl(Token name) :name(name){}
+  VarDecl(Token name, std::unique_ptr<Expression> &&init)
+      : name(name), init(std::move(init)) {}
+  VarDecl(Token name) : name(name) {}
 
-    void accept(StmtVisitor &visitor) const override { visitor.visit(*this); }
+  void accept(StmtVisitor &visitor) const override { visitor.visit(*this); }
 
-    Token name;
-    std::unique_ptr<Expression> init;
+  Token name;
+  std::unique_ptr<Expression> init;
 };
 
 #endif // CPPLOX_AST_H
