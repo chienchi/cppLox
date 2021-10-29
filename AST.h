@@ -57,6 +57,18 @@ struct Unary : public Expression {
   std::unique_ptr<Expression> right;
 };
 
+struct Assignment : public Expression {
+  Assignment(std::unique_ptr<Expression> &&left, Token op,
+             std::unique_ptr<Expression> &&right)
+      : left(std::move(left)), op(std::move(op)), right(std::move(right)) {}
+
+  void accept(ExprVisitor &visitor) const { visitor.visit(*this); }
+
+  std::unique_ptr<Expression> left;
+  Token op;
+  std::unique_ptr<Expression> right;
+};
+
 struct Stmt {
   virtual void accept(StmtVisitor &) const = 0;
 

@@ -114,8 +114,15 @@ public:
     return left;
   }
 
+  std::unique_ptr<Expression> assignment() {
+    // assignment     -> IDENTIFIER "=" assignment
+    //                  equality ;
+
+    // TBD, tricky to translate from Java.
+  }
+
   std::unique_ptr<Expression> expression() {
-    // expression     → equality ;
+    // expression     → assignment
     return equality();
   };
 
