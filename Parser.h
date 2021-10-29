@@ -119,6 +119,21 @@ public:
     //                  equality ;
 
     // TBD, tricky to translate from Java.
+    auto left = equality();
+
+    if (match(TokenType::EQUAL)){
+        auto equals = previous();
+        auto value = assignment();
+        if (Var* var = dynamic_cast<Var*>(left.get()))
+        {
+            auto name = var->name;
+            return std::make_unique<Assignment>(name , std::move(value));
+        }
+        // real l-value expression
+
+        throw parser_error{"Invalid assignment target."};
+    }
+    return left;
   }
 
   std::unique_ptr<Expression> expression() {
