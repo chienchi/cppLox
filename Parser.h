@@ -138,7 +138,7 @@ public:
 
   std::unique_ptr<Expression> expression() {
     // expression     → assignment
-    return equality();
+    return assignment();
   };
 
   std::unique_ptr<Stmt> statement() {

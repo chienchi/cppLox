@@ -14,6 +14,16 @@ class Environment {
 public:
   void define(const std::string &name, Value value) { values[name] = value; }
 
+  void assign(Token name, Value value){
+      auto iter = values.find(name.lexeme);
+      if (iter !=values.end()){
+          values[name.lexeme]=value;
+      }
+      else{
+          throw RuntimeError(name,"Undefined variable: " + name.lexeme + ".");
+      }
+  }
+
   Value get(Token name)  {
     auto iter = values.find(name.lexeme);
     if (iter != values.end()) {

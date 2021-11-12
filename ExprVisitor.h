@@ -10,6 +10,7 @@ struct Literal;
 struct Unary;
 struct Binary;
 struct Var;
+struct Assignment;
 
 struct ExprVisitor {
   virtual void visit(const Expression &) = 0;
@@ -17,5 +18,6 @@ struct ExprVisitor {
   virtual void visit(const Unary &) = 0;
   virtual void visit(const Binary &) = 0;
   virtual void visit(const Var&) = 0;
+  virtual void visit(const Assignment&) = 0;
 };
 #endif // CPPLOX_EXPRVISITOR_H

@@ -79,7 +79,13 @@ public:
     result = environment.get(expr.name);
   }
 
-  void visit(const Stmt& statement) {
+    void visit(const Assignment &expr) {
+        Value value = eval(*expr.right);
+        environment.assign(expr.name, value);
+    }
+
+
+    void visit(const Stmt& statement) {
     statement.accept(*this);
   }
 
