@@ -90,6 +90,10 @@ struct PrintStmt : public Stmt {
   std::unique_ptr<Expression> value;
 };
 
+struct BlockStmt : public {
+    // TBD:
+};
+
 struct VarDecl : public Stmt {
   VarDecl(Token name, std::unique_ptr<Expression> &&init)
       : name(name), init(std::move(init)) {}
