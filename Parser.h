@@ -144,6 +144,8 @@ public:
     std::unique_ptr<Stmt> statement() {
         if (match(TokenType::PRINT))
             return printStatement();
+        if (match(TokenType::LEFT_BRACE))
+            return blockStatement();
         return expressionStatement();
     }
 
@@ -160,7 +162,12 @@ public:
     }
 
     std::unique_ptr<Stmt> blockStatement() {
-        // TBD
+        std::vector<std::unique_ptr<Stmt>> statements;
+        while (!check(TokenType::RIGHT_BRACE) && !isAtEnd()) {
+            statements.push_back(declaration());
+        }
+        consume(TokenType::RIGHT_BRACE,"Expect '}' after declaration*.");
+        return std::make_unique<BlockStmt>(std::move(statements));
     }
 
     std::unique_ptr<Stmt> varDecl() {

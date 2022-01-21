@@ -90,8 +90,12 @@ struct PrintStmt : public Stmt {
   std::unique_ptr<Expression> value;
 };
 
-struct BlockStmt : public {
-    // TBD:
+struct BlockStmt : public Stmt{
+    BlockStmt(std::vector<std::unique_ptr<Stmt>> &&statements) : statements(std::move(statements)){}
+
+    void accept(StmtVisitor &visitor) const override { visitor.visit(*this); }
+
+    std::vector<std::unique_ptr<Stmt>> statements;
 };
 
 struct VarDecl : public Stmt {
