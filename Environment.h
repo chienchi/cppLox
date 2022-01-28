@@ -12,36 +12,39 @@
 
 class Environment {
 public:
-    Environment(){}
-    explicit Environment(std::unique_ptr<Environment> &environment): enclosing(std::move(environment)) {}
-  void define(const std::string &name, Value value) { values[name] = value; }
+    Environment() {}
 
-  void assign(Token name, Value value){
-      auto iter = values.find(name.lexeme);
-      if (iter !=values.end()){
-          values[name.lexeme]=value;
-      }else if(enclosing){
-          enclosing->assign(name,value);
-      }else{
-          throw RuntimeError(name,"Undefined variable: " + name.lexeme + ".");
-      }
-  }
+    explicit Environment(std::shared_ptr<Environment> environment) : enclosing(environment) {}
 
-  Value get(Token name)  {
-    auto iter = values.find(name.lexeme);
-    if (iter != values.end()) {
-      return values[name.lexeme];
+    void define(const std::string &name, Value value) { values[name] = value; }
+
+    void assign(Token name, Value value) {
+        auto iter = values.find(name.lexeme);
+        if (iter != values.end()) {
+            values[name.lexeme] = value;
+        } else if (enclosing) {
+            enclosing->assign(name, value);
+        } else {
+            throw RuntimeError(name, "Undefined variable: " + name.lexeme + ".");
+        }
     }
-    if (enclosing)
-        return enclosing->get(name);
 
-    throw RuntimeError(name,
-                        "Undefined variable: " + name.lexeme + ".");
-  }
+    Value get(Token name) {
+        auto iter = values.find(name.lexeme);
+        if (iter != values.end()) {
+            return values[name.lexeme];
+        }
+        if (enclosing)
+            return enclosing->get(name);
+
+        throw RuntimeError(name,
+                           "Undefined variable: " + name.lexeme + ".");
+    }
 
 
 private:
-  std::unordered_map<std::string, Value> values;
-  std::unique_ptr<Environment> enclosing;
+    std::unordered_map<std::string, Value> values;
+    std::shared_ptr<Environment> enclosing;
 };
+
 #endif // CPPLOX_ENVIRONMENT_H
