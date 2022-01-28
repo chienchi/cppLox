@@ -12,6 +12,7 @@
 
 class Environment {
 public:
+    Environment(){}
     explicit Environment(std::unique_ptr<Environment> &environment): enclosing(std::move(environment)) {}
   void define(const std::string &name, Value value) { values[name] = value; }
 

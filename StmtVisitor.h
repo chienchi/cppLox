@@ -5,12 +5,14 @@ struct Stmt;
 struct ExprStmt;
 struct PrintStmt;
 struct VarDecl;
+struct BlockStmt;
 
 struct StmtVisitor {
   virtual void visit(const Stmt &) = 0;
   virtual void visit(const ExprStmt &) = 0;
   virtual void visit(const PrintStmt &) = 0;
   virtual void visit(const VarDecl&) = 0;
+  virtual void visit(const BlockStmt&) = 0;
 };
 
 #endif // CPPLOX_STMTVISITOR_H

@@ -76,12 +76,12 @@ public:
 
   void visit(const Var &expr) {
     // TBD
-    result = environment.get(expr.name);
+    result = environment->get(expr.name);
   }
 
     void visit(const Assignment &expr) {
         Value value = eval(*expr.right);
-        environment.assign(expr.name, value);
+        environment->assign(expr.name, value);
     }
 
 
@@ -97,6 +97,9 @@ public:
     statement.value->accept(*this);
     std::cout<<result<<std::endl;
   }
+    void visit(const BlockStmt& block) {
+        executeBlock(block.statements, std::make_unique<Environment>(this->environment));
+    }
 
   void visit(const VarDecl& statement) {
     //TBD
@@ -104,7 +107,7 @@ public:
     if (statement.init){
         value=eval(*statement.init);
     }
-    environment.define(statement.name.lexeme, value);
+    environment->define(statement.name.lexeme, value);
   }
 
 
@@ -118,9 +121,22 @@ public:
     }
   }
 
-  void execute(std::unique_ptr<Stmt> &statement) {
+  void execute(const std::unique_ptr<Stmt> &statement) {
       statement->accept(*this);
   }
+    void executeBlock(const std::vector<std::unique_ptr<Stmt>> &statements, std::unique_ptr<Environment>&& new_environment) {
+      std::unique_ptr<Environment> previous=std::move(this->environment);
+      try {
+          this->environment = std::move(new_environment);
+          for (auto &stmt: statements) {
+              execute(stmt);
+          }
+      }catch(RuntimeError err){
+          std::cout<<"Error: "+err.get_msg()<<std::endl;
+      }
+      this->environment=std::move(previous);
+
+    }
 
   Value get_result(){
       return result;
@@ -143,7 +159,7 @@ private:
   Value result;
 
   // TODO: Add an instance of Environment
-  Environment environment;
+  std::unique_ptr<Environment> environment=std::make_unique<Environment>();
 };
 
 #endif // CPPLOX_INTERPRETER_H

@@ -6,6 +6,7 @@
 #include "Token.h"
 #include "Value.h"
 #include <memory>
+#include <vector>
 
 // Chapter 5 Abstract Syntax Tree
 struct Expression {
