@@ -149,6 +149,8 @@ public:
         return expressionStatement();
     }
 
+    // TBD: ifStatement() {}
+
     std::unique_ptr<Stmt> printStatement() {
         auto value = expression();
         consume(TokenType::SEMICOLON, "Expect ';' after value.");
@@ -202,9 +204,12 @@ public:
          *                  | statement
          * varDecl        -> "var" IDENTIFIER ( "=" expression)? ";"
          * statement      -> exprStmt
+         *                  | ifStmt
          *                  | printStmt
          *                  | blockStmt;
          * exprStmt       -> expression ";"
+         * ifStmt         -> "if" "(" expression ")" statement
+         *                   ("else" statement)? ;
          * printStmt      -> "print" expression ";" ;
          * blockStmt      -> "{" declaration* "}";
          *

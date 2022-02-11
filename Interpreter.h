@@ -137,6 +137,7 @@ public:
         } catch (RuntimeError err) {
             std::cout << "Error: " + err.get_msg() << std::endl;
         }
+        // TODO: this is not exception safe. Implement `finally`!!!
         this->environment = previous;
     }
 
